@@ -14,7 +14,7 @@
 				<swiper class="swiper-box" @change="changeSwiper" :current="swiperDotIndex">
 					<swiper-item v-for="(item, index) in data" :key="item._id">
 						<view class="swiper-item" @click="clickBannerItem(item)">
-							<image class="banner-image" :src="item.bannerfile.url" mode="aspectFill" :draggable="false" />
+							<image class="banner-image" :src="item.bannerfile.url" mode="widthFix" :draggable="false" />
 						</view>
 					</swiper-item>
 				</swiper>
