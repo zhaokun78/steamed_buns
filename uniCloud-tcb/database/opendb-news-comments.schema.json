@@ -1,8 +1,6 @@
 {
 	"bsonType": "object",
-	"required": ["article_id", "user_id", "comment_content", "like_count", "comment_type", "reply_user_id",
-		"reply_comment_id"
-	],
+	"required": ["article_id", "user_id", "comment_content", "like_count", "comment_type", "reply_user_id", "reply_comment_id"],
 	"permission": {
 		"read": true,
 		"create": "auth.uid != null && get(`database.opendb-news-article.${doc.article_id}`).comment_status == 1",

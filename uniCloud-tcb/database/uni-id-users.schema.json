@@ -1,8 +1,8 @@
 {
 	"bsonType": "object",
-	"permission":{
-		"read":true,
-		"update":"doc._id == auth.uid"
+	"permission": {
+		"read": true,
+		"update": "doc._id == auth.uid"
 	},
 	"required": [],
 	"properties": {
@@ -14,8 +14,8 @@
 			"title": "用户名",
 			"description": "用户名，不允许重复",
 			"trim": "both",
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			}
 		},
 		"password": {
@@ -23,16 +23,16 @@
 			"title": "密码",
 			"description": "密码，加密存储",
 			"trim": "both",
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			}
 		},
 		"password_secret_version": {
 			"bsonType": "int",
 			"title": "passwordSecret",
 			"description": "密码使用的passwordSecret版本",
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			}
 		},
 		"nickname": {
@@ -47,44 +47,37 @@
 			"description": "用户性别：0 未知 1 男性 2 女性",
 			"defaultValue": 0,
 			"enum": [{
-					"text": "未知",
-					"value": 0
-				},
-				{
-					"text": "男",
-					"value": 1
-				},
-				{
-					"text": "女",
-					"value": 2
-				}
-			]
+				"text": "未知",
+				"value": 0
+			}, {
+				"text": "男",
+				"value": 1
+			}, {
+				"text": "女",
+				"value": 2
+			}]
 		},
 		"status": {
 			"bsonType": "int",
 			"description": "用户状态：0 正常 1 禁用 2 审核中 3 审核拒绝",
 			"title": "用户状态",
 			"defaultValue": 0,
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			},
 			"enum": [{
-					"text": "正常",
-					"value": 0
-				},
-				{
-					"text": "禁用",
-					"value": 1
-				},
-				{
-					"text": "审核中",
-					"value": 2
-				},
-				{
-					"text": "审核拒绝",
-					"value": 3
-				}
-			]
+				"text": "正常",
+				"value": 0
+			}, {
+				"text": "禁用",
+				"value": 1
+			}, {
+				"text": "审核中",
+				"value": 2
+			}, {
+				"text": "审核拒绝",
+				"value": 3
+			}]
 		},
 		"mobile": {
 			"bsonType": "string",
@@ -92,8 +85,8 @@
 			"description": "手机号码",
 			"pattern": "^\\+?[0-9-]{3,20}$",
 			"trim": "both",
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			}
 		},
 		"mobile_confirmed": {
@@ -102,16 +95,14 @@
 			"title": "手机号验证状态",
 			"defaultValue": 0,
 			"enum": [{
-					"text": "未验证",
-					"value": 0
-				},
-				{
-					"text": "已验证",
-					"value": 1
-				}
-			],
-			"permission":{
-				"write":false
+				"text": "未验证",
+				"value": 0
+			}, {
+				"text": "已验证",
+				"value": 1
+			}],
+			"permission": {
+				"write": false
 			}
 		},
 		"email": {
@@ -120,8 +111,8 @@
 			"title": "邮箱",
 			"description": "邮箱地址",
 			"trim": "both",
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			}
 		},
 		"email_confirmed": {
@@ -130,16 +121,14 @@
 			"title": "邮箱验证状态",
 			"defaultValue": 0,
 			"enum": [{
-					"text": "未验证",
-					"value": 0
-				},
-				{
-					"text": "已验证",
-					"value": 1
-				}
-			],
-			"permission":{
-				"write":false
+				"text": "未验证",
+				"value": 0
+			}, {
+				"text": "已验证",
+				"value": 1
+			}],
+			"permission": {
+				"write": false
 			}
 		},
 		"avatar": {
@@ -156,8 +145,8 @@
 		"department_id": {
 			"bsonType": "array",
 			"description": "部门ID",
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			},
 			"title": "部门",
 			"enumType": "tree",
@@ -183,8 +172,8 @@
 		"wx_unionid": {
 			"bsonType": "string",
 			"description": "微信unionid",
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			}
 		},
 		"wx_openid": {
@@ -200,22 +189,22 @@
 					"description": "微信小程序平台openid"
 				}
 			},
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			}
 		},
 		"ali_openid": {
 			"bsonType": "string",
 			"description": "支付宝平台openid",
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			}
 		},
 		"apple_openid": {
 			"bsonType": "string",
 			"description": "苹果登录openid",
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			}
 		},
 		"comment": {
@@ -223,19 +212,16 @@
 			"title": "备注",
 			"description": "备注",
 			"trim": "both",
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			}
 		},
 		"realname_auth": {
 			"bsonType": "object",
 			"description": "实名认证信息",
-			"required": [
-				"type",
-				"auth_status"
-			],
-			"permission":{
-				"write":false
+			"required": ["type", "auth_status"],
+			"permission": {
+				"write": false
 			},
 			"properties": {
 				"type": {
@@ -256,11 +242,11 @@
 				},
 				"real_name": {
 					"bsonType": "string",
-					"description": "真实姓名/企业名称"
+					"description": "真实姓名\/企业名称"
 				},
 				"identity": {
 					"bsonType": "string",
-					"description": "身份证号码/营业执照号码"
+					"description": "身份证号码\/营业执照号码"
 				},
 				"id_card_front": {
 					"bsonType": "string",
@@ -295,8 +281,8 @@
 		"score": {
 			"bsonType": "int",
 			"description": "用户积分，积分变更记录可参考：uni-id-scores表定义",
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			}
 		},
 		"register_date": {
@@ -305,8 +291,8 @@
 			"forceDefaultValue": {
 				"$env": "now"
 			},
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			}
 		},
 		"register_ip": {
@@ -315,51 +301,51 @@
 			"forceDefaultValue": {
 				"$env": "clientIP"
 			},
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			}
 		},
 		"last_login_date": {
 			"bsonType": "timestamp",
 			"description": "最后登录时间",
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			}
 		},
 		"last_login_ip": {
 			"bsonType": "string",
 			"description": "最后登录时 IP 地址",
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			}
 		},
 		"token": {
 			"bsonType": "array",
 			"description": "用户token",
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			}
 		},
 		"inviter_uid": {
 			"bsonType": "array",
 			"description": "用户全部上级邀请者",
 			"trim": "both",
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			}
 		},
 		"invite_time": {
 			"bsonType": "timestamp",
 			"description": "受邀时间",
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			}
 		},
 		"my_invite_code": {
 			"bsonType": "string",
 			"description": "用户自身邀请码",
-			"permission":{
-				"write":false
+			"permission": {
+				"write": false
 			}
 		}
 	}

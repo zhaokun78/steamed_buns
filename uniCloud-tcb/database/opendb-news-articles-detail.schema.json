@@ -116,7 +116,7 @@
 			}
 		}
 	},
-	"required": ["user_id", "title", "content", "article_status", "view_count", "like_count", "is_sticky", "is_essence",
-		"comment_status", "comment_count", "mode"
+	"required": ["user_id", "title", "content", "article_status", "view_count", "like_count", "is_sticky", "is_essence", "comment_status",
+		"comment_count", "mode"
 	]
 }
