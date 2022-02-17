@@ -1,0 +1,78 @@
+
+view {
+	display: flex;
+	box-sizing: border-box;
+	flex-direction: column;
+}
+.content {
+	padding: 0 50rpx;
+	width: 750rpx;
+	flex: 1;
+}
+.input-box {
+	padding: 0 15px;
+	margin-bottom: 10px;
+	background-color: #F8F8F8;
+	border-radius: 6px;
+	font-size: 28rpx;
+}
+.get-code {
+	margin: 0;
+	margin-top: 15px;
+	background-color: #007aff;
+	color: #FFFFFF;
+}
+.input-box,
+.get-code {
+	height: 45px;
+	line-height: 45px;
+}
+.title {
+	text-align: center;
+	padding-bottom: 5px;
+}
+.tip {
+	color: #666666;
+	font-size: 26rpx;
+	margin: 6px 0;
+}
+.easyinput {
+	background-color: #F8F8F8;
+	border-radius: 6rpx;
+}
+.send-btn {
+	width: 100%;
+	margin-top: 15px;
+	border-radius: 6rpx;
+}
+.link {
+	color: #04498c;
+}
+.auth-box {
+	flex-direction: row;
+	justify-content: space-between;
+	margin-top: 20px;
+}
+.auth-box .link {
+	font-size: 26rpx;
+}
+.login-text-sub {
+	color: #8a8f8b;
+}
+.toRegister {
+	margin-top: 80px;
+	width: 600rpx;
+}
+.captcha-box{
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-end;
+}
+.captcha-img{
+	margin:15px 15px 0 0;
+	width: 250rpx;
+}
+.captcha{
+	width: 350rpx;
+}
+

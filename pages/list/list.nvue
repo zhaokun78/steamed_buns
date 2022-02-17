@@ -6,55 +6,11 @@
 
 		<!-- 搜索功能 -->
 		<view class="uni-search-box">
-			<uni-search-bar v-model="keyword" ref="searchBar" radius="100" cancelButton="none" disabled
-				:placeholder="inputPlaceholder" />
+			<uni-search-bar v-model="keyword" ref="searchBar" radius="100" cancelButton="none" disabled :placeholder="inputPlaceholder" />
 			<view class="cover-search-bar" @click="searchClick"></view>
 		</view>
 
-		<unicloud-db ref='udb' v-slot:default="{data,pagination,hasMore, loading, error, options}" @error="onqueryerror"
-			:collection="colList" :page-size="10"
-			>
-			<!-- 基于 uni-list 的页面布局 field="user_id.username"-->
-			<uni-list class="uni-list" :border="false" :style="{height:listHight}">
-				
-				<!-- 作用于app端nvue页面的下拉加载 -->
-				<!-- #ifdef APP-NVUE -->
-				<refreshBox @refresh="refresh" :loading="loading"></refreshBox>
-				<!-- #endif -->
-
-				<!-- 列表渲染 -->
-				<uni-list-item :to="'/pages/list/detail?id='+item._id+'&title='+item.title" v-for="(item,index) in data"
-					:key="index">
-					<!-- 通过header插槽定义列表左侧图片 -->
-					<template v-slot:header>
-						<image class="avatar" :src="item.avatar" mode="aspectFill"></image>
-					</template>
-					<!-- 通过body插槽定义布局 -->
-					<template v-slot:body>
-						<view class="main">
-							<text class="title">{{item.title}}</text>
-							<view class="info">
-								<text class="author">{{item.user_id[0]?item.user_id[0].username:''}}</text>
-								<uni-dateformat class="last_modify_date" :date="item.last_modify_date"
-									format="yyyy-MM-dd" :threshold="[60000, 2592000000]" />
-							</view>
-						</view>
-					</template>
-				</uni-list-item>
-				<!-- 加载状态：上拉加载更多，加载中，没有更多数据了，加载错误 -->
-				<!-- #ifdef APP-PLUS -->
-				<uni-list-item>
-					<template v-slot:body>
-				<!-- #endif -->
-						<uni-load-state @networkResume="refresh" :state="{data,pagination,hasMore, loading, error}"
-							@loadMore="loadMore">
-						</uni-load-state>
-				<!-- #ifdef APP-PLUS -->
-					</template>
-				</uni-list-item>
-				<!-- #endif -->
-			</uni-list>
-		</unicloud-db>
+		这里是首页
 	</view>
 </template>
 
@@ -63,7 +19,8 @@
 	import statusBar from "@/uni_modules/uni-nav-bar/components/uni-nav-bar/uni-status-bar";
 
 	import Gps from '@/uni_modules/json-gps/js_sdk/gps.js';
-	const gps = new Gps(),db = uniCloud.database();
+	const gps = new Gps(),
+		db = uniCloud.database();
 
 	export default {
 		components: {
@@ -77,7 +34,7 @@
 					return '请输入搜索内容'
 				}
 			},
-			colList(){
+			colList() {
 				return [
 					db.collection('opendb-news-articles').where(this.where).field('avatar,title,last_modify_date,user_id').getTemp(),
 					db.collection('uni-id-users').field('_id,username').getTemp()
@@ -167,7 +124,7 @@
 			onpullingdown(e) {
 				console.log(e);
 				this.showRefresh = true
-				if(e.pullingDistance>100){
+				if (e.pullingDistance > 100) {
 					this.refresh()
 				}
 			}
@@ -190,6 +147,7 @@
 		box-sizing: border-box;
 		flex-direction: column;
 	}
+
 	/* #endif */
 	.pages {
 		background-color: #FFFFFF;
@@ -234,6 +192,7 @@
 		width: 580rpx;
 		/* #endif */
 	}
+
 	.cover-search-bar {
 		height: 50px;
 		position: relative;

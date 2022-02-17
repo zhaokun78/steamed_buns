@@ -16,9 +16,9 @@
 			this.globalData.$t = str => this.$t(str)
 
 			initApp();
-			
+
 			// #ifdef H5
-				openApp() //创建在h5端全局悬浮引导用户下载app的功能
+			openApp() //创建在h5端全局悬浮引导用户下载app的功能
 			// #endif
 			// #ifdef APP-PLUS
 			//checkIsAgree(); APP端暂时先用原生默认生成的。目前，自定义方式启动vue界面时，原生层已经请求了部分权限这并不符合国家的法规
@@ -52,6 +52,7 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
 	/*每个页面公共css */
+	@import '~@/static/style/app.scss';
 </style>

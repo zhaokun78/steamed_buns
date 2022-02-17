@@ -28,6 +28,11 @@
 			"label": "商品名称",
 			"trim": "both"
 		},
+		"price": {
+			"bsonType": "double",
+			"description": "商品价格（元）",
+			"label": "商品价格（元）"
+		},
 		"goods_banner_imgs": {
 			"bsonType": "array",
 			"description": "商品详情页的banner图地址",
@@ -39,11 +44,11 @@
 			"maxLength": 5
 		},
 		"goods_thumb": {
-			"bsonType": "string",
+			"bsonType": "file",
+			"fileMediaType": "image",
+			"fileExtName": "jpg,png",
 			"description": "商品缩略图，用于在列表或搜索结果中预览显示",
-			"label": "商品缩略图",
-			"pattern": "^(http://|https://|/|./|@/)\\S",
-			"trim": "both"
+			"label": "商品缩略图"
 		},
 		"goods_desc": {
 			"bsonType": "string",
@@ -75,7 +80,8 @@
 		"is_on_sale": {
 			"bsonType": "bool",
 			"description": "是否上架销售",
-			"label": "是否上架销售"
+			"label": "是否上架销售",
+			"defaultValue": true
 		},
 		"keywords": {
 			"bsonType": "string",
@@ -88,5 +94,9 @@
 		"category_id",
 		"goods_sn",
 		"name",
+		"price",
+		"goods_banner_imgs",
+		"goods_thumb",
+		"goods_desc"
 	]
 }

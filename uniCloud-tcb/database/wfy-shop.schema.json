@@ -3,7 +3,7 @@
 	"bsonType": "object",
 	"required": ["type", "name", "owner_id", "city_code", "address", "business_hour_start", "business_hour_end", "business_state"],
 	"permission": {
-		"read": false,
+		"read": true,
 		"create": false,
 		"update": false,
 		"delete": false
@@ -35,8 +35,8 @@
 		},
 		"owner_id": {
 			"bsonType": "string",
-			"description": "店主",
-			"label": "店主",
+			"description": "店主id",
+			"label": "店主id",
 			"foreignKey": "uni-id-users._id"
 		},
 		"city_code": {
