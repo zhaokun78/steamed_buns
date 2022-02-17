@@ -1,6 +1,8 @@
 <template>
 	<view class="container">
+		<!-- 主体 begin -->
 		<view class="main" v-if="goods.length>0">
+			<!-- 顶部 begin -->
 			<view class="nav">
 				<view class="header">
 					<view class="left" v-if="orderType == 'takein'">
@@ -38,8 +40,10 @@
 					<view class="iconfont iconarrow-right"></view>
 				</view>
 			</view>
+			<!-- 顶部 end -->
+
 			<view class="content">
-				<!-- 商品分类 -->
+				<!-- 商品分类 begin -->
 				<scroll-view class="menus" :scroll-into-view="menuScrollIntoView" scroll-with-animation scroll-y>
 					<view class="wrapper">
 						<view class="menu" :id="`menu-${item._id}`" :class="{'current': item._id === currentCateId}" v-if="goods_categories.length>0"
@@ -49,7 +53,9 @@
 						</view>
 					</view>
 				</scroll-view>
-				<!-- goods list begin -->
+				<!-- 商品分类 end -->
+
+				<!-- 商品列表 begin -->
 				<scroll-view class="goods" scroll-with-animation scroll-y :scroll-top="cateScrollTop" @scroll="handleGoodsScroll">
 					<view class="wrapper">
 						<view class="list">
@@ -96,9 +102,10 @@
 						</view>
 					</view>
 				</scroll-view>
-				<!-- goods list end -->
+				<!-- 商品列表 end -->
 			</view>
 			<!-- content end -->
+
 			<!-- 购物车栏 begin -->
 			<view class="cart-box" v-if="cart.length > 0">
 				<view class="mark">
@@ -112,6 +119,8 @@
 			</view>
 			<!-- 购物车栏 end -->
 		</view>
+		<!-- 主体 end -->
+
 		<!-- 商品详情模态框 begin -->
 		<modal :show="goodDetailModalVisible" class="good-detail-modal" color="#5A5B5C" width="90%" custom padding="0rpx" radius="12rpx">
 			<view class="cover">
@@ -165,6 +174,7 @@
 			</view>
 		</modal>
 		<!-- 商品详情模态框 end -->
+
 		<!-- 购物车详情popup -->
 		<popup-layer direction="top" :show-pop="cartPopupVisible" class="cart-popup">
 			<template slot="content">
@@ -233,7 +243,6 @@
 		},
 		data() {
 			return {
-				store: {}, //店铺
 				goods_categories: [], //商品分类
 				currentCateId: undefined, //当前选中商品分类
 				goods: [], //当前选中分类的所有商品
@@ -257,7 +266,7 @@
 			const db = uniCloud.database()
 			const shop = await db.collection("wfy-shop").get()
 			console.log('wfy-shop', shop)
-			that.store = shop.result.data[0]
+			this.SET_STORE(shop.result.data[0])
 
 			//加载商品分类
 			const categories = await db.collection('wfy-goods-categories').orderBy('sort').get()
@@ -274,7 +283,7 @@
 			uni.hideLoading()
 		},
 		computed: {
-			...mapState(['orderType', 'address']),
+			...mapState(['orderType', 'address', 'store']),
 			//计算单个饮品添加到购物车的数量
 			goodCartNum() {
 				return (id) => this.cart.reduce((acc, cur) => {
@@ -307,16 +316,7 @@
 			}
 		},
 		methods: {
-			...mapMutations(['SET_ORDER_TYPE']),
-
-			// async init() { //页面初始化
-			// this.loading = true
-			// await this.getStore()
-			// this.goods = await this.$api('goods')
-			// this.loading = false
-			// this.cart = uni.getStorageSync('cart') || []
-			// },
-
+			...mapMutations(['SET_ORDER_TYPE', 'SET_STORE']),
 			takout() {
 				if (this.orderType == 'takeout') return
 

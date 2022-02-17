@@ -8,6 +8,7 @@ const store = new Vuex.Store({
 	state: {
 		orderType: 'takein',
 		address: {},
+		store: {},
 	},
 	mutations: {
 		SET_ORDER_TYPE(state, type) {
@@ -15,6 +16,9 @@ const store = new Vuex.Store({
 		},
 		SET_ADDRESS(state, address) {
 			state.address = address
+		},
+		SET_STORE(state, store) {
+			state.store = store
 		},
 	},
 	modules: {
