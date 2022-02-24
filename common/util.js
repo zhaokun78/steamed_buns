@@ -52,6 +52,23 @@ const util = {
 				}
 			})
 		})
+	},
+	//处理店铺营业状态
+	processShopBusinessState(shops) {
+		const now = new Date()
+		for (let i = 0; i < shops.length; i++) {
+			if (shops[i].business_state == 0) {
+				if (now.getHours() >= shops[i].business_hour_start && now.getHours() <= shops[i].business_hour_end) {
+					shops[i].state = '营业'
+				} else {
+					shops[i].state = '打烊'
+				}
+			} else if (shops[i].business_state == 1) {
+				shops[i].state = '营业'
+			} else if (shops[i].business_state == 2) {
+				shops[i].state = '打烊'
+			}
+		}
 	}
 }
 

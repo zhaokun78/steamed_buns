@@ -270,28 +270,41 @@
 
 			//加载用户当前所在城市所有店铺
 			const db = uniCloud.database()
-			const shops = await db.collection("wfy-shop").where("concat('156',city_code)== '" + my_location.ad_info.city_code + "' ").get()
-			console.log('wfy-shop', shops)
+			let res = await db.collection("wfy-shop").where("concat('156',city_code)== '" + my_location.ad_info.city_code + "' ").get()
+			console.log('wfy-shop', res)
+			let shops = []
+			if (res.result.code == 0) {
+				shops = res.result.data
+			}
 
-			//取距离用户当前位置最近的店铺 begin
+			//处理店铺营业状态
+			util.processShopBusinessState(shops)
+
+			//批量计算距离
 			let targetArray = []
-			for (let i = 0; i < shops.result.data.length; i++) {
+			for (let i = 0; i < shops.length; i++) {
 				targetArray.push({
-					'latitude': shops.result.data[i].latitude,
-					'longitude': shops.result.data[i].longitude
+					'latitude': shops[i].latitude,
+					'longitude': shops[i].longitude
 				})
 			}
-			let res = await util.calculateDistance(targetArray)
+			res = await util.calculateDistance(targetArray)
 			console.log('calculateDistance', res)
 			for (let i = 0; i < res.length; i++) {
-				shops.result.data[i].distance = res[i].distance
+				shops[i].distance = res[i].distance
 			}
 
-			const sortedShops = shops.result.data.sort(function(a, b) {
+			//按距离从近到远排序
+			const sortedShops = shops.sort(function(a, b) {
 				return a.distance - b.distance
 			})
-			that.SET_STORE(sortedShops[0])
-			//取距离用户当前位置最近的店铺 end
+			//选中第一个营业状态的店铺
+			for (let i = 0; i < sortedShops.length; i++) {
+				if (sortedShops[i].state == '营业') {
+					that.SET_STORE(sortedShops[i])
+					break
+				}
+			}
 
 			//加载商品分类
 			const categories = await db.collection('wfy-goods-categories').orderBy('sort').get()

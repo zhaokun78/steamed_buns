@@ -67,29 +67,16 @@
 		methods: {
 			...mapMutations(['SET_STORE']),
 			init() {
-				//店铺经纬度数组，用于批量计算距离
-				let targetArray = []
-
 				const db = uniCloud.database()
 				db.collection('wfy-shop').get().then((r) => {
 					console.log('wfy-shop', r)
 
-					for (let i = 0; i < r.result.data.length; i++) {
-						//处理营业状态
-						if (r.result.data[i].business_state == 0) {
-							let now = new Date()
-							if (now.getHours() >= r.result.data[i].business_hour_start && now.getHours() <= r.result.data[i]
-								.business_hour_end) {
-								r.result.data[i].state = '营业'
-							} else {
-								r.result.data[i].state = '打烊'
-							}
-						} else if (r.result.data[i].business_state == 1) {
-							r.result.data[i].state = '营业'
-						} else if (r.result.data[i].business_state == 2) {
-							r.result.data[i].state = '打烊'
-						}
+					//处理店铺营业状态
+					util.processShopBusinessState(r.result.data)
 
+					//店铺经纬度数组，用于批量计算距离
+					let targetArray = []
+					for (let i = 0; i < r.result.data.length; i++) {
 						targetArray.push({
 							'latitude': r.result.data[i].latitude,
 							'longitude': r.result.data[i].longitude
