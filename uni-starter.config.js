@@ -55,18 +55,18 @@ export default {
 		未列举到的， 或设备环境不支持的选项， 将被隐藏。 如果你需要在不同平台有不同的配置， 直接用条件编译即可
 		根据数组的第0项， 决定登录方式的第一优先级。 
 		*/
-		"login": ["weixin", "username"]
+		"login": ["weixin"]
 	},
 	//关于应用
 	"about": {
 		//应用名称
-		"appName": "uni-starter",
+		"appName": "味丰源云南包子王",
 		//应用logo
-		"logo": "/static/logo.png",
+		"logo": "/static/logo.jpg",
 		//公司名称
-		"company": "北京xx网络技术有限公司",
+		"company": "昆明xx网络技术有限公司",
 		//口号
-		"slogan": "云端一体应用快速开发模版",
+		"slogan": "",
 		//政策协议
 		"agreements": [{
 				"title": "用户服务协议", //如果开启了多语言国际化，本配置将失效。请在 lang/en.js 和 lang/zh-Hans.js中配置
