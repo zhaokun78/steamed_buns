@@ -12,7 +12,7 @@ const util = {
 			return distance + ' 米'
 		}
 	},
-	//批量计算距离并且按距离从近到远排序
+	//批量计算距离
 	calculateDistance(targetArray) {
 		return new Promise((resolve, reject) => {
 			qqmapsdk.calculateDistance({
@@ -21,10 +21,7 @@ const util = {
 				success: function(res) {
 					console.log('calculateDistance', res)
 					if (res.status == 0) {
-						const sortedArray = res.result.elements.sort(function(a, b) {
-							return a.distance - b.distance
-						})
-						resolve(sortedArray)
+						resolve(res.result.elements)
 					} else {
 						reject(res.message)
 					}

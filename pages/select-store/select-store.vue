@@ -104,7 +104,9 @@
 							r.result.data[i].distance = res[i].distance
 						}
 
-						that.stores = r.result.data
+						that.stores = r.result.data.sort(function(a, b) {
+							return a.distance - b.distance
+						})
 					})
 				})
 			},
