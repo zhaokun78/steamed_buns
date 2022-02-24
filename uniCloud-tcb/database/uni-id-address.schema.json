@@ -1,5 +1,11 @@
 {
 	"bsonType": "object",
+	"permission": {
+		"create": true,
+		"delete": "doc.user_id == auth.uid",
+		"read": "doc.user_id == auth.uid",
+		"update": "doc.user_id == auth.uid"
+	},
 	"properties": {
 		"_id": {
 			"description": "ID，系统自动生成"
