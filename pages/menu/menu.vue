@@ -6,21 +6,22 @@
 			<view class="nav">
 				<view class="header">
 					<view class="left" v-if="orderType == 'takein'">
-						<view class="store-name">
+						<view class="store-name" @tap="selectStore">
 							<text>{{ store.name }}</text>
 							<view class="iconfont iconarrow-right"></view>
 						</view>
 						<view class="store-location">
 							<image src='/static/images/order/location.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
-							<text>距离您 {{ store.distance_text }}</text>
+							<text>距离您 {{ formatDistance(store.distance) }}</text>
 						</view>
 					</view>
 					<view class="left overflow-hidden" v-else>
-						<view class="d-flex align-items-center overflow-hidden">
+						<view class="d-flex align-items-center overflow-hidden" @tap="selectAddress">
 							<image src='/static/images/order/location.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
 							<view class="font-size-extra-lg text-color-base font-weight-bold text-truncate">
 								{{ address.address }}
 							</view>
+							<view class="iconfont iconarrow-right"></view>
 						</view>
 						<view class="font-size-sm text-color-assist overflow-hidden text-truncate">
 							由<text class="text-color-base" style="margin: 0 10rpx">{{ store.name }}</text>配送
@@ -235,6 +236,7 @@
 		mapActions,
 		mapGetters
 	} from 'vuex'
+	import util from '@/common/util'
 
 	export default {
 		components: {
@@ -262,11 +264,34 @@
 			})
 
 			let that = this
-			//加载当前所在城市距离最近的店铺
+
+			//从 storage 中加载当前用户的定位信息
+			const my_location = uni.getStorageSync('my_location')
+
+			//加载当前所在城市所有店铺
 			const db = uniCloud.database()
-			const shop = await db.collection("wfy-shop").get()
-			console.log('wfy-shop', shop)
-			this.SET_STORE(shop.result.data[0])
+			const shops = await db.collection("wfy-shop").where("concat('156',city_code)== '" + my_location.ad_info.city_code + "' ").get()
+			console.log('wfy-shop', shops)
+
+			//取距离当前用户最近的店铺
+			let targetArray = []
+			for (let i = 0; i < shops.result.data.length; i++) {
+				targetArray.push({
+					'latitude': shops.result.data[i].latitude,
+					'longitude': shops.result.data[i].longitude
+				})
+			}
+			let res = await util.calculateDistance(targetArray)
+			console.log('calculateDistance', res)
+			for (let i = 0; i < res.length; i++) {
+				shops.result.data[i].distance = res[i].distance
+			}
+
+			const sortedShops = shops.result.data.sort(function(a, b) {
+				return a.distance - b.distance
+			})
+			that.SET_STORE(sortedShops[0])
+
 
 			//加载商品分类
 			const categories = await db.collection('wfy-goods-categories').orderBy('sort').get()
@@ -317,6 +342,19 @@
 		},
 		methods: {
 			...mapMutations(['SET_ORDER_TYPE', 'SET_STORE']),
+			formatDistance(distance) {
+				return util.formatDistance(distance)
+			},
+			selectStore() {
+				uni.navigateTo({
+					url: '/pages/select-store/select-store'
+				})
+			},
+			selectAddress() {
+				uni.navigateTo({
+					url: '/pages/address/address?is_choose=true'
+				})
+			},
 			takout() {
 				if (this.orderType == 'takeout') return
 

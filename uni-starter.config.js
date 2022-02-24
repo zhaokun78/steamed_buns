@@ -30,7 +30,8 @@ export default {
 		*/
 		"needLogin": [
 			//{pattern:/^\/pages\/list.*/},	//支持正则表达式
-			"/pages/address/address"
+			"/pages/address/address",
+			"/pages/pay/pay",
 		],
 
 		// "visitor": [

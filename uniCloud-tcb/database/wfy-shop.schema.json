@@ -1,7 +1,9 @@
 // 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
 {
 	"bsonType": "object",
-	"required": ["type", "name", "owner_id", "city_code", "address", "business_hour_start", "business_hour_end", "business_state"],
+	"required": ["type", "name", "owner_id", "city_code", "address", "latitude", "longitude", "phone", "business_hour_start", "business_hour_end",
+		"business_state"
+	],
 	"permission": {
 		"read": true,
 		"create": false,
@@ -41,14 +43,36 @@
 		},
 		"city_code": {
 			"bsonType": "string",
-			"description": "所在城市编码",
-			"label": "所在城市",
-			"foreignKey": "opendb-city-china.code"
+			"description": "所在城市",
+			"enum": {
+				"collection": "opendb-city-china",
+				"field": "code as value, name as text, eq(type, 2) as isleaf",
+				"where": "type!=2",
+				"orderby": "value asc"
+			},
+			"enumType": "tree",
+			"foreignKey": "opendb-city-china.code",
+			"title": "所在城市"
 		},
 		"address": {
 			"bsonType": "string",
 			"description": "详细地址",
 			"label": "详细地址"
+		},
+		"longitude": {
+			"bsonType": "string",
+			"description": "经度",
+			"label": "经度"
+		},
+		"latitude": {
+			"bsonType": "string",
+			"description": "纬度",
+			"label": "纬度"
+		},
+		"phone": {
+			"bsonType": "string",
+			"description": "电话",
+			"label": "电话"
 		},
 		"business_hour_start": {
 			"bsonType": "int",
@@ -70,6 +94,7 @@
 			"bsonType": "int",
 			"description": "营业状态：0代表自动、1代表营业，2代表打烊",
 			"label": "营业状态",
+			"defaultValue": 0,
 			"enum": [{
 				"text": "自动",
 				"value": 0

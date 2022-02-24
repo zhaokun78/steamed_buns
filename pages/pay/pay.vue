@@ -16,11 +16,11 @@
 					<list-cell @click="chooseAddress">
 						<view class="w-100 d-flex flex-column">
 							<view class="d-flex align-items-center justify-content-between mb-10">
-								<view class="font-size-extra-lg text-color-base">{{ address.street }}</view>
+								<view class="font-size-extra-lg text-color-base">{{ address.address }}</view>
 								<image src="/static/images/navigator-1.png" class="arrow"></image>
 							</view>
 							<view class="d-flex text-color-assist font-size-sm align-items-center">
-								<view class="mr-10">{{ address.accept_name }}</view>
+								<view class="mr-10">{{ address.name }}</view>
 								<view class="mr-10">{{ !address.sex ? '先生' : '女士' }}</view>
 								<view>{{ address.mobile }}</view>
 							</view>
@@ -149,7 +149,7 @@
 					<view class="font-size-extra-lg text-color-base">请再次确认下单地址</view>
 				</view>
 				<view class="d-flex font-size-base text-color-base font-weight-bold align-items-center justify-content-between mb-20">
-					<view>{{ address.accept_name }} {{ address.sex ? '女士' : '先生' }}</view>
+					<view>{{ address.name }} {{ address.sex ? '女士' : '先生' }}</view>
 					<view>{{ address.mobile }}</view>
 				</view>
 				<view class="d-flex font-size-sm text-color-assist align-items-center justify-content-between mb-40">

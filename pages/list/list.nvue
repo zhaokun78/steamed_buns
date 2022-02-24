@@ -4,202 +4,66 @@
 		<statusBar></statusBar>
 		<!-- #endif -->
 
-		<!-- 搜索功能 -->
-		<view class="uni-search-box">
-			<uni-search-bar v-model="keyword" ref="searchBar" radius="100" cancelButton="none" disabled :placeholder="inputPlaceholder" />
-			<view class="cover-search-bar" @click="searchClick"></view>
-		</view>
-
 		这里是首页
 	</view>
 </template>
 
 <script>
-	var cdbRef, currentWebview;
 	import statusBar from "@/uni_modules/uni-nav-bar/components/uni-nav-bar/uni-status-bar";
 
 	import Gps from '@/uni_modules/json-gps/js_sdk/gps.js';
-	const gps = new Gps(),
-		db = uniCloud.database();
+	const gps = new Gps()
+
+	import util from '@/common/util'
 
 	export default {
 		components: {
 			statusBar
 		},
-		computed: {
-			inputPlaceholder(e) {
-				if (uni.getStorageSync('CURRENT_LANG') == "en") {
-					return 'Please enter the search content'
-				} else {
-					return '请输入搜索内容'
-				}
-			},
-			colList() {
-				return [
-					db.collection('opendb-news-articles').where(this.where).field('avatar,title,last_modify_date,user_id').getTemp(),
-					db.collection('uni-id-users').field('_id,username').getTemp()
-				]
-			}
-		},
 		data() {
-			return {
-				where: '"article_status" == 1',
-				keyword: "",
-				showRefresh: false,
-				listHight: 0
-			}
-		},
-		watch: {
-			keyword(keyword, oldValue) {
-				let where = '"article_status" == 1 '
-				if (keyword) {
-					this.where = where + `&& /${keyword}/.test(title)`;
-				} else {
-					this.where = where;
-				}
-			}
+			return {}
 		},
 		async onReady() {
 			// #ifdef APP-NVUE
 			/* 可用窗口高度 - 搜索框高 - 状态栏高 */
 			this.listHight = uni.getSystemInfoSync().windowHeight - uni.getSystemInfoSync().statusBarHeight - 50 + 'px';
 			// #endif
+
 			// #ifndef APP-NVUE
 			this.listHight = 'auto'
 			// #endif
-			cdbRef = this.$refs.udb
 		},
 		async onShow() {
-			this.keyword = getApp().globalData.searchText
-			getApp().globalData.searchText = ''
-			//这里仅演示如何，在onShow生命周期获取设备位置，并在设备或者应用没有权限时自动引导。设置完毕自动重新获取。
-			//你可以基于他做自己的业务，比如：根据距离由近到远排序列表数据等
-			// uni.showLoading({
-			// 	title:"获取定位中"
-			// });
-			//默认h5端不获取定位
+			uni.showLoading({
+				title: "获取定位中"
+			})
+
 			// #ifndef H5
+			//获取用户当前定位
 			let location = await gps.getLocation({
 				geocode: true
 			})
-			console.log(location);
-			// #endif
-			// if(location){
-			// 	uni.showToast({
-			// 		title: JSON.stringify(location),
-			// 		icon: 'none'
-			// 	});
-			// }
-			// uni.hideLoading()
-		},
-		methods: {
-			searchClick(e) { //点击搜索框
-				uni.hideKeyboard();
-				uni.navigateTo({
-					url: '/pages/list/search/search',
-					animationType: 'fade-in'
-				});
-			},
-			retry() {
-				this.refresh()
-			},
-			refresh() {
-				cdbRef.loadData({
-					clear: true
-				}, () => {
-					uni.stopPullDownRefresh()
-					// #ifdef APP-NVUE
-					this.showRefresh = false
-					// #endif
-					console.log('end');
+			console.log('location', location)
+			// // #endif
+
+			if (location) {
+				//根据坐标逆向位置信息
+				let res = await util.reverseGeocoder(location)
+				console.log('reverseGeocoder', res)
+				uni.setStorage({
+					key: 'my_location',
+					data: res,
+					success: function() {
+						console.log('set my_location success')
+					},
 				})
-				console.log('refresh');
-			},
-			loadMore() {
-				cdbRef.loadMore()
-			},
-			onqueryerror(e) {
-				console.error(e);
-			},
-			onpullingdown(e) {
-				console.log(e);
-				this.showRefresh = true
-				if (e.pullingDistance > 100) {
-					this.refresh()
-				}
 			}
+
+			uni.hideLoading()
 		},
-		// #ifndef APP-NVUE
-		onPullDownRefresh() {
-			this.refresh()
-		},
-		onReachBottom() {
-			this.loadMore()
-		}
-		// #endif
+		methods: {},
 	}
 </script>
 
-<style scoped>
-	/* #ifndef APP-NVUE */
-	view {
-		display: flex;
-		box-sizing: border-box;
-		flex-direction: column;
-	}
-
-	/* #endif */
-	.pages {
-		background-color: #FFFFFF;
-	}
-
-	.avatar {
-		width: 200rpx;
-		height: 200rpx;
-		margin-right: 10rpx;
-	}
-
-	.main {
-		justify-content: space-between;
-	}
-
-	.title {
-		width: 480rpx;
-		font-size: 32rpx;
-	}
-
-	.info {
-		flex-direction: row;
-		justify-content: space-between;
-	}
-
-	.author,
-	.last_modify_date {
-		font-size: 28rpx;
-		color: #999999;
-	}
-
-	.uni-search-box {
-		background-color: #FFFFFF;
-		position: sticky;
-		height: 50px;
-		top: 0;
-		left: 0;
-		/* #ifndef APP-PLUS */
-		z-index: 9;
-		/* #endif */
-		/* #ifdef MP-WEIXIN */
-		width: 580rpx;
-		/* #endif */
-	}
-
-	.cover-search-bar {
-		height: 50px;
-		position: relative;
-		top: -50px;
-		margin-bottom: -50px;
-		/* #ifndef APP-NVUE */
-		z-index: 999;
-		/* #endif */
-	}
+<style>
 </style>
