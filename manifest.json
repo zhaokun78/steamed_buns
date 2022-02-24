@@ -90,29 +90,20 @@
                 "oauth" : {
                     "apple" : {},
                     "weixin" : {
-                        "appid" : "",
-                        "appsecret" : "",
+                        "appid" : "wxb4593c4d8e399277",
+                        "appsecret" : "c67f8dc3c02bfa622bbb2a5d26f51459",
                         "UniversalLinks" : ""
                     },
                     "univerify" : {}
                 },
-                "ad" : {
-                    "gdt" : {},
-                    "csj" : {}
-                },
+                "ad" : {},
                 "share" : {
                     "weixin" : {
-                        "appid" : "",
+                        "appid" : "wxb4593c4d8e399277",
                         "UniversalLinks" : ""
                     }
                 },
-                "geolocation" : {
-                    "baidu" : {
-                        "__platform__" : [ "ios", "android" ],
-                        "appkey_ios" : "请填写地图的key",
-                        "appkey_android" : "请填写地图的key"
-                    }
-                },
+                "geolocation" : {},
                 "push" : {
                     "unipush" : {}
                 },
