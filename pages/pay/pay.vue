@@ -38,9 +38,9 @@
 						<view class="flex-fill d-flex justify-content-between align-items-center">
 							<view class="title flex-fill">联系电话</view>
 							<view class="time">
-								<input class="text-right" placeholder="请输入手机号码" value="18666600000" />
+								<input class="text-right" placeholder="请输入手机号码" :value="form.mobile" />
 							</view>
-							<view class="contact-tip font-size-sm">自动填写</view>
+							<button type="primary" open-type="getPhoneNumber" @getphonenumber="getphonenumber" style="font-size: 10px;">获取手机号</button>
 						</view>
 					</list-cell>
 				</template>
@@ -180,7 +180,8 @@
 			return {
 				cart: [],
 				form: {
-					remark: ''
+					remark: '',
+					mobile: ''
 				},
 				ensureAddressModalVisible: false
 			}
@@ -203,6 +204,44 @@
 		},
 		methods: {
 			...mapMutations(['SET_ORDER']),
+			getphonenumber(e) {
+				console.log('getphonenumber', e)
+				if (e.detail.errMsg != 'getPhoneNumber:ok') {
+					return
+				}
+
+				uniCloud.callFunction({
+					name: "uni-id-cf",
+					data: {
+						"action": "getCurrentUserInfo",
+						"params": e.detail
+					},
+					success: (r) => {
+						console.log('getCurrentUserInfo success:', r)
+						if (r.result.userInfo.mobile) {
+							this.form.mobile = r.result.userInfo.mobile
+						} else {
+							uni.showModal({
+								title: '提示',
+								content: '请先绑定手机号！',
+								success: function(res) {
+									if (res.confirm) {
+										uni.navigateTo({
+											url: '/pages/ucenter/userinfo/userinfo'
+										})
+									}
+								}
+							})
+						}
+					},
+					fail: (e) => {
+						console.log('getCurrentUserInfo fail:', e)
+					},
+					complete: (c) => {
+						console.log('getCurrentUserInfo complete:', c)
+					}
+				})
+			},
 			goToRemark() {
 				uni.navigateTo({
 					url: '/pages/remark/remark?remark=' + this.form.remark
