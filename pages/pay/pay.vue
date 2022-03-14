@@ -258,11 +258,20 @@
 					title: '请稍等'
 				})
 
-				//创建订单记录
 				const db = uniCloud.database()
 				try {
+					//调用云函数生成取餐号
+					let pickupNumber = await uniCloud.callFunction({
+						name: 'wfy-generate-pickup-number',
+						data: {
+							shop_id: this.store._id
+						}
+					})
+					console.log('pickupNumber', pickupNumber)
+
+					//创建订单记录
 					let orderResult = await db.collection('uni-id-base-order').add({
-						pick_up_number: '0001',
+						pick_up_number: pickupNumber.result.data[0].pickup_number,
 						status: 2,
 						type: this.orderType == 'takein' ? 0 : 1,
 						store: this.store._id,

@@ -19,7 +19,7 @@
 			}
 		},
 		"pick_up_number": {
-			"bsonType": "string",
+			"bsonType": "int",
 			"description": "取餐号",
 			"label": "取餐号"
 		},
