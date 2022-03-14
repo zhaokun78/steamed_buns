@@ -18,6 +18,14 @@
 		"_id": {
 			"description": "ID，系统自动生成"
 		},
+		"create_time": {
+			"bsonType": "timestamp",
+			"description": "创建时间",
+			"label": "创建时间",
+			"forceDefaultValue": {
+				"$env": "now"
+			}
+		},
 		"type": {
 			"bsonType": "int",
 			"description": "店铺类型，0代表直营店、1代表加盟店",

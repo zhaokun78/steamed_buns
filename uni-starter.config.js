@@ -32,6 +32,7 @@ export default {
 			//{pattern:/^\/pages\/list.*/},	//支持正则表达式
 			"/pages/address/address",
 			"/pages/pay/pay",
+			"/pages/take-foods/take-foods",
 		],
 
 		// "visitor": [

@@ -250,6 +250,13 @@
 				"navigationBarBackgroundColor": "#ffffff"
 			}
 
+		}, {
+			"path": "pages/take-foods/take-foods",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
 		}
 	],
 	"globalStyle": {
@@ -291,6 +298,11 @@
 			"text": "点餐",
 			"iconPath": "static/images/tabBar/drink.png",
 			"selectedIconPath": "static/images/tabBar/drink_selected.png"
+		}, {
+			"pagePath": "pages/take-foods/take-foods",
+			"text": "取餐",
+			"iconPath": "static/images/tabBar/take.png",
+			"selectedIconPath": "static/images/tabBar/take_selected.png"
 		}, {
 			"pagePath": "pages/ucenter/ucenter",
 			"text": "我的",

@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<!-- 顶部文字 -->
-		<text class="title">{{$t('login.phoneLogin')}}</text>
+		<!-- <text class="title">{{$t('login.phoneLogin')}}</text> -->
 		<!-- 登录框 -->
 		<view v-if="['apple','weixin'].includes(type)" class="quickLogin">
 			<image @click="quickLogin" :src="imgSrc" mode="widthFix" class="quickLoginBtn"></image>

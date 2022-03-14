@@ -3,10 +3,10 @@
 	"bsonType": "object",
 	"required": ["order_id", "goods_id", "price", "num"],
 	"permission": {
-		"read": false,
-		"create": false,
-		"update": false,
-		"delete": false
+		"create": true,
+		"delete": false,
+		"read": "doc.user_id == auth.uid",
+		"update": false
 	},
 	"properties": {
 		"_id": {

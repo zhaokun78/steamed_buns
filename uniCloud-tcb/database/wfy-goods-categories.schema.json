@@ -10,6 +10,14 @@
 		"_id": {
 			"description": "存储文档 ID（文章 ID），系统自动生成"
 		},
+		"create_time": {
+			"bsonType": "timestamp",
+			"description": "创建时间",
+			"label": "创建时间",
+			"forceDefaultValue": {
+				"$env": "now"
+			}
+		},
 		"name": {
 			"bsonType": "string",
 			"description": "类别名称",
