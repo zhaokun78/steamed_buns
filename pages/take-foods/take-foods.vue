@@ -10,88 +10,30 @@
 			<view class="font-size-sm text-color-primary" @tap="gotoMyOrder">查看历史订单</view>
 		</view>
 		<template v-else>
-			<view class="order-box" v-for="(order,index) in paidOrders" :key="item._id">
-				<view class="bg-white">
-					<view class="section">
-						<!-- store info begin -->
-						<list-cell :hover="false">
-							<view class="w-100 d-flex align-items-center">
-								<view class="d-flex flex-column w-60">
-									<view class="w-100 text-color-base">{{ order.store[0].name }}</view>
-								</view>
-								<view class="d-flex justify-content-end align-items-center w-40">
-									<image src="/static/images/order/navigation.png" style="width: 60rpx; height: 60rpx;"></image>
-								</view>
-							</view>
-						</list-cell>
-						<!-- store info end -->
-						<list-cell :hover="false" padding="50rpx 30rpx">
-							<view class="w-100 d-flex flex-column">
-								<view class="d-flex align-items-center just-content-center" v-if="order.type == 0">
-									<view class="sort-num">取餐号：{{ order.pick_up_number }}</view>
-								</view>
-								<!-- steps begin -->
-								<view class="d-flex just-content-center">
-									<view class="steps d-flex flex-column" :class="{'w-80': order.type == 0, 'w-100': order.type== 1}">
-										<view class="steps__text-column">
-											<view class="steps__text-column-item">
-												<view class="steps__text-column-item-text">
-													{{ order.type == 1 ? '配送中' : '请取餐' }}
-												</view>
-											</view>
-										</view>
-									</view>
-								</view>
-								<!-- steps end -->
-								<!-- goods begin -->
-								<!-- goods end -->
-							</view>
-						</list-cell>
+			<uni-card v-for="(order,index) in paidOrders" :key="order._id" mode="title" :title="order.store[0].name"
+				:subTitle="order.type == 0 ? '自提' : '外卖'" :extra="'合计：￥'+ order.total_fee/100" @click="selectStore(item)"
+				shadow="10px 10px 3px 10px rgba(0, 0, 0, 0.08)" :isShadow="true" note="true">
+				<view>
+					<view>
+						<text class="redtxt">{{order.type == 0 ? '取餐号：'+order.pick_up_number:'配送中'}}</text>
 					</view>
-					<view class="section">
-						<!-- payment and amount begin -->
-						<list-cell :hover="false" padding="50rpx 30rpx">
-							<view class="w-100 d-flex flex-column">
-								<view class="pay-cell">
-									<view>金额总计</view>
-									<view class="font-weight-bold">￥{{ order.total_fee/100 }}</view>
-								</view>
-							</view>
-						</list-cell>
-						<!-- payment and amount end -->
+					<view>
+						<text class="txt">下单时间：{{ formatDateTime(order.create_time) }}</text>
 					</view>
-					<view class="section">
-						<!-- order info begin -->
-						<list-cell :hover="false" padding="50rpx 30rpx">
-							<view class="w-100 d-flex flex-column">
-								<view class="pay-cell">
-									<view>下单时间</view>
-									<view class="font-weight-bold">{{ formatDateTime(order.create_time) }}</view>
-								</view>
-								<view class="pay-cell">
-									<view>订单号</view>
-									<view class="font-weight-bold">{{ order._id }}</view>
-								</view>
-							</view>
-						</list-cell>
-						<!-- order info end -->
-					</view>
-					<!-- order other info begin -->
-					<list-cell :hover="false" padding="50rpx 30rpx 20rpx" last>
-						<view class="w-100 d-flex flex-column">
-							<view class="pay-cell">
-								<view>取餐号</view>
-								<view class="font-weight-bold">{{ order.pick_up_number }}</view>
-							</view>
-							<view class="pay-cell">
-								<view>取餐方式</view>
-								<view class="font-weight-bold">{{order.type == 0? '自提':'外卖'}}</view>
-							</view>
-						</view>
-					</list-cell>
-					<!-- order other info end -->
 				</view>
-			</view>
+				<template v-slot:footer>
+					<view class="footer-box">
+						<view>
+							<image src='/static/images/mine/stxy.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
+							<text class="footer-box__item">收藏店铺</text>
+						</view>
+						<view @tap="navigationToStore(item)">
+							<image src='/static/images/mine/shdz.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
+							<text class="footer-box__item">店铺导航</text>
+						</view>
+					</view>
+				</template>
+			</uni-card>
 		</template>
 	</view>
 </template>
@@ -121,7 +63,7 @@
 				}
 			},
 			formatDateTime(date) {
-				util.formatDateTime(date)
+				return util.formatDate(date)
 			},
 			gotoMenu() {
 				uni.switchTab({
@@ -261,5 +203,30 @@
 				margin: 0 8px;
 			}
 		}
+	}
+
+	.redtxt {
+		color: red;
+		font-weight: bold;
+		font-size: 20px;
+	}
+
+	.txt {
+		font-size: 12px;
+	}
+
+	.footer-box {
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		justify-content: space-between;
+		flex-direction: row;
+	}
+
+	.footer-box__item {
+		align-items: center;
+		padding: 2px 0;
+		font-size: 12px;
+		color: #666;
 	}
 </style>
