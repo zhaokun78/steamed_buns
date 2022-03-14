@@ -27,7 +27,7 @@
 							<image src='/static/images/mine/stxy.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
 							<text class="footer-box__item">收藏店铺</text>
 						</view>
-						<view @tap="navigationToStore(item)">
+						<view @tap="navigationToStore(order.store[0])">
 							<image src='/static/images/mine/shdz.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
 							<text class="footer-box__item">店铺导航</text>
 						</view>
@@ -68,6 +68,18 @@
 			gotoMenu() {
 				uni.switchTab({
 					url: '/pages/menu/menu'
+				})
+			},
+			navigationToStore(store) {
+				console.log('navigationToStore', store)
+				uni.openLocation({
+					name: store.name,
+					latitude: parseFloat(store.latitude),
+					longitude: parseFloat(store.longitude),
+					success: function() {},
+					fail: function(e) {
+						console.log(e)
+					}
 				})
 			}
 		}
