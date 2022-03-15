@@ -8,6 +8,9 @@
 							<view class="d-flex align-items-center just-content-center" v-if="order.type == 0">
 								<view class="redtxt">取餐号：{{ order.pick_up_number }}</view>
 							</view>
+							<view class="d-flex align-items-center just-content-center" v-if="order.type == 1">
+								<view class="redtxt">配送中：美团配送</view>
+							</view>
 							<!-- steps begin -->
 							<view class="d-flex just-content-center">
 								<view class="steps d-flex flex-column" :class="{'w-80': order.type == 0, 'w-100': order.type== 1}">
@@ -29,7 +32,7 @@
 									</view>
 									<view class="d-flex w-40 align-items-center justify-content-between pl-30">
 										<view class="font-size-base text-color-base">x{{ good.num }}</view>
-										<view class="font-size-base text-color-base font-weight-bold">￥{{ good.price }}</view>
+										<view class="font-size-base text-color-base font-weight-bold">￥{{ good.price/100 }}</view>
 									</view>
 								</view>
 							</view>
@@ -291,7 +294,7 @@
 	.redtxt {
 		color: #ff557f;
 		font-weight: bold;
-		font-size: 30px;
+		font-size: 24px;
 	}
 
 	.txt {

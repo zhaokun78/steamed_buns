@@ -55,8 +55,8 @@
 			async onShow() {
 				const db = uniCloud.database()
 
-				//本人的所有已付款自提订单
-				const order = db.collection('uni-id-base-order').where('user_id==$cloudEnv_uid && status==2 && type==0').getTemp()
+				//本人的所有已付款订单
+				const order = db.collection('uni-id-base-order').where('user_id==$cloudEnv_uid && status==2').getTemp()
 				const res = await db.collection(order, 'wfy-shop').get()
 				console.log('uni-id-base-order', res)
 				if (res.result.code == 0) {

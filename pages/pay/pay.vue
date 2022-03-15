@@ -152,8 +152,8 @@
 					<view>{{ address.mobile }}</view>
 				</view>
 				<view class="d-flex font-size-sm text-color-assist align-items-center justify-content-between mb-40">
-					<view>{{ address.street + address.door_number }}</view>
-					<button type="primary" size="mini" plain class="change-address-btn">修改地址</button>
+					<view>{{ address.address }}</view>
+					<button type="primary" size="mini" plain class="change-address-btn" @tap="selectAddress">修改地址</button>
 				</view>
 				<button type="primary" class="pay_btn" @tap="pay">确认并付款</button>
 			</view>
@@ -198,6 +198,11 @@
 		},
 		methods: {
 			...mapMutations(['SET_ORDER']),
+			selectAddress() {
+				uni.navigateTo({
+					url: '/pages/address/address?is_choose=true&scene=pay'
+				})
+			},
 			getphonenumber(e) {
 				console.log('getphonenumber', e)
 				if (e.detail.errMsg != 'getPhoneNumber:ok') {
@@ -260,18 +265,22 @@
 
 				const db = uniCloud.database()
 				try {
-					//调用云函数生成取餐号
-					let pickupNumber = await uniCloud.callFunction({
-						name: 'wfy-generate-pickup-number',
-						data: {
-							shop_id: this.store._id
-						}
-					})
-					console.log('pickupNumber', pickupNumber)
+					let pickupNumber = null
+					if (this.orderType == 'takein') {
+						//调用云函数生成取餐号
+						let pickupNumberRes = await uniCloud.callFunction({
+							name: 'wfy-generate-pickup-number',
+							data: {
+								shop_id: this.store._id
+							}
+						})
+						console.log('pickupNumber', pickupNumberRes)
+						pickupNumber = pickupNumberRes.result.data[0].pickup_number
+					}
 
 					//创建订单记录
 					let orderResult = await db.collection('uni-id-base-order').add({
-						pick_up_number: pickupNumber.result.data[0].pickup_number,
+						pick_up_number: pickupNumber,
 						status: 2,
 						type: this.orderType == 'takein' ? 0 : 1,
 						store: this.store._id,
