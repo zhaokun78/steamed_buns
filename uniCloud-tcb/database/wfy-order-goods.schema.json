@@ -5,7 +5,7 @@
 	"permission": {
 		"create": true,
 		"delete": false,
-		"read": "doc.user_id == auth.uid",
+		"read": true,
 		"update": false
 	},
 	"properties": {

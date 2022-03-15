@@ -1,52 +1,53 @@
 <template>
 	<view class="container">
-		<view v-if="paidOrders.length==0" class="d-flex w-100 h-100 flex-column just-content-center align-items-center">
-			<image src="/static/logo.jpg" class="drinks-img"></image>
-			<view class="tips d-flex flex-column align-items-center font-size-base text-color-assist">
-				<view>您还没有点单</view>
-				<view>快去犒劳一下自己吧~</view>
-			</view>
-			<button type="primary" class="drink-btn" size="default" @tap="gotoMenu">去点餐</button>
-			<view class="font-size-sm text-color-primary" @tap="gotoMyOrder">查看历史订单</view>
-		</view>
-		<template v-else>
-			<uni-card v-for="(order,index) in paidOrders" :key="order._id" mode="title" :title="order.store[0].name"
-				:subTitle="order.type == 0 ? '自提' : '外卖'" :extra="'合计：￥'+ order.total_fee/100" @click="selectStore(item)"
-				shadow="10px 10px 3px 10px rgba(0, 0, 0, 0.08)" :isShadow="true" note="true">
-				<view>
-					<view>
-						<text class="redtxt">{{order.type == 0 ? '取餐号：'+order.pick_up_number:'配送中'}}</text>
-					</view>
-					<view>
-						<text class="txt">下单时间：{{ formatDateTime(order.create_time) }}</text>
-					</view>
+		<uni-segmented-control :current="curTabIndex" :values="tabItems" @clickItem="onClickTab" styleType="text" activeColor="#00e26d">
+		</uni-segmented-control>
+		<block v-if="curTabIndex==0">
+			<view v-if="paidOrders.length==0" class="d-flex w-100 h-100 flex-column just-content-center align-items-center">
+				<image src="/static/logo.jpg" class="drinks-img"></image>
+				<view class="tips d-flex flex-column align-items-center font-size-base text-color-assist">
+					<view>您还没有点单</view>
+					<view>快去犒劳一下自己吧~</view>
 				</view>
-				<template v-slot:footer>
-					<view class="footer-box">
+				<button type="primary" class="drink-btn" size="default" @tap="gotoMenu">去点餐</button>
+			</view>
+			<template v-else>
+				<uni-card v-for="(order,index) in paidOrders" :key="order._id" mode="title" :title="order.store[0].name"
+					:subTitle="order.type == 0 ? '自提' : '外卖'" :extra="'合计：￥'+ order.total_fee/100" @click="gotoOrderDetail(order)"
+					shadow="10px 10px 3px 10px rgba(0, 0, 0, 0.08)" :isShadow="true" note="true">
+					<view>
 						<view>
-							<image src='/static/images/mine/stxy.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
-							<text class="footer-box__item">收藏店铺</text>
+							<text class="redtxt">{{order.type == 0 ? '取餐号：'+order.pick_up_number:'配送中'}}</text>
 						</view>
-						<view @tap="navigationToStore(order.store[0])">
-							<image src='/static/images/mine/shdz.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
-							<text class="footer-box__item">店铺导航</text>
+						<view>
+							<text class="txt">下单时间：{{ formatDateTime(order.create_time) }}</text>
 						</view>
 					</view>
-				</template>
-			</uni-card>
-		</template>
+					<template v-slot:footer>
+						<view class="footer-box">
+							<view>
+								<image src='/static/images/mine/stxy.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
+								<text class="footer-box__item">收藏店铺</text>
+							</view>
+							<view @tap="navigationToStore(order.store[0])">
+								<image src='/static/images/mine/shdz.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
+								<text class="footer-box__item">店铺导航</text>
+							</view>
+						</view>
+					</template>
+				</uni-card>
+			</template>
+		</block>
 	</view>
 </template>
 
 <script>
-	import listCell from '@/components/list-cell/list-cell'
 	import util from '@/common/util'
 	export default {
-		components: {
-			listCell
-		},
 		data() {
 			return {
+				curTabIndex: 0, //当前选择标签
+				tabItems: ['当前订单', '历史订单'],
 				paidOrders: [], //本人所有“已付款”订单
 			}
 		},
@@ -80,6 +81,14 @@
 					fail: function(e) {
 						console.log(e)
 					}
+				})
+			},
+			onClickTab(e) {
+				this.curTabIndex = e.currentIndex
+			},
+			gotoOrderDetail(order) {
+				uni.navigateTo({
+					url: '/pages/order-detail/order-detail?orderId=' + order._id
 				})
 			}
 		}
@@ -218,7 +227,7 @@
 	}
 
 	.redtxt {
-		color: red;
+		color: #ff557f;
 		font-weight: bold;
 		font-size: 20px;
 	}

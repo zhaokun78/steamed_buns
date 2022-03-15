@@ -258,7 +258,16 @@
 			}
 
 		}
-	],
+	    ,{
+            "path" : "pages/order-detail/order-detail",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-starter",
