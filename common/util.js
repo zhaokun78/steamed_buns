@@ -43,6 +43,43 @@ const util = {
 				fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)))
 		return fmt
 	},
+	formatOrderState(order) {
+		switch (order.status) {
+			case 1:
+				return '待付款'
+				break
+			case 2:
+				return '已付款'
+				break
+			case 3:
+				return order.type == 0 ? '取餐中' : '配送中'
+				break
+			case 4:
+				return '已完成'
+				break
+			case 5:
+				return '退款审核中'
+				break
+			case 6:
+				return '退款中'
+				break
+			case 7:
+				return '已退款'
+				break
+			case -1:
+				return '取消退款'
+				break
+			case -2:
+				return '退款拒绝'
+				break
+			case -3:
+				return '退款失败'
+				break
+			default:
+				return '未知'
+				break
+		}
+	},
 	//距离格式化
 	formatDistance(distance) {
 		if (distance > 1000) {

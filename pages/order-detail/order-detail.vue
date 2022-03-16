@@ -9,15 +9,15 @@
 								<view class="redtxt">取餐号：{{ order.pick_up_number }}</view>
 							</view>
 							<view class="d-flex align-items-center just-content-center" v-if="order.type == 1">
-								<view class="redtxt">配送中：美团配送</view>
+								<view class="redtxt">{{formatOrderState(order)}}</view>
 							</view>
 							<!-- steps begin -->
-							<view class="d-flex just-content-center">
-								<view class="steps d-flex flex-column" :class="{'w-80': order.type == 0, 'w-100': order.type== 1}">
+							<view class="d-flex just-content-center" v-if="order.type==0">
+								<view class="steps d-flex flex-column w-80">
 									<view class="steps__text-column">
 										<view class="steps__text-column-item">
 											<view class="steps__text-column-item-text">
-												{{ formatOrderState(order.status) }}
+												{{ formatOrderState(order) }}
 											</view>
 										</view>
 									</view>
@@ -122,39 +122,8 @@
 			formatDateTime(date) {
 				return util.formatDate(date)
 			},
-			formatOrderState(status) {
-				switch (status) {
-					case 1:
-						return '待付款'
-						break
-					case 2:
-						return '已付款'
-						break
-					case 3:
-						return '已完成'
-						break
-					case 4:
-						return '退款审核中'
-						break
-					case 5:
-						return '退款中'
-						break
-					case 6:
-						return '已退款'
-						break
-					case -1:
-						return '已取消付款/退款'
-						break
-					case -2:
-						return '退款拒绝'
-						break
-					case -3:
-						return '退款失败'
-						break
-					default:
-						return '未知'
-						break
-				}
+			formatOrderState(order) {
+				return util.formatOrderState(order)
 			}
 		}
 	}

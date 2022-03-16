@@ -17,7 +17,7 @@
 					shadow="10px 10px 3px 10px rgba(0, 0, 0, 0.08)" :isShadow="true" note="true">
 					<view>
 						<view>
-							<text class="redtxt">{{order.type == 0 ? '取餐号：'+order.pick_up_number:'配送中'}}</text>
+							<text class="redtxt">{{order.type == 0 ? '取餐号：'+order.pick_up_number:formatOrderState(order)}}</text>
 						</view>
 						<view>
 							<text class="txt">下单时间：{{ formatDateTime(order.create_time) }}</text>
@@ -55,8 +55,8 @@
 			async onShow() {
 				const db = uniCloud.database()
 
-				//本人的所有已付款订单
-				const order = db.collection('uni-id-base-order').where('user_id==$cloudEnv_uid && status==2').getTemp()
+				//本人的所有已付款、取餐中/配送中订单
+				const order = db.collection('uni-id-base-order').where('user_id==$cloudEnv_uid && (status==2 || status==3)').getTemp()
 				const res = await db.collection(order, 'wfy-shop').get()
 				console.log('uni-id-base-order', res)
 				if (res.result.code == 0) {
@@ -65,6 +65,9 @@
 			},
 			formatDateTime(date) {
 				return util.formatDate(date)
+			},
+			formatOrderState(order) {
+				return util.formatOrderState(order)
 			},
 			gotoMenu() {
 				uni.switchTab({
