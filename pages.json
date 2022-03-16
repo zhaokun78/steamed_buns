@@ -257,17 +257,35 @@
 				"enablePullDownRefresh": false
 			}
 
+		}, {
+			"path": "pages/order-detail/order-detail",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/wfy-shop/add",
+			"style": {
+				"navigationBarTitleText": "新增"
+			}
+		}, {
+			"path": "pages/wfy-shop/edit",
+			"style": {
+				"navigationBarTitleText": "编辑"
+			}
+		}, {
+			"path": "pages/wfy-shop/list",
+			"style": {
+				"navigationBarTitleText": "列表"
+			}
+		}, {
+			"path": "pages/wfy-shop/detail",
+			"style": {
+				"navigationBarTitleText": "详情"
+			}
 		}
-	    ,{
-            "path" : "pages/order-detail/order-detail",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-starter",

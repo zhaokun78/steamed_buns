@@ -5,9 +5,9 @@
 		"business_state"
 	],
 	"permission": {
-		"read": true,
-		"create": false,
-		"update": false,
+		"read": "doc.owner_id == auth.uid",
+		"create": true,
+		"update": "doc.owner_id == auth.uid",
 		"delete": false
 	},
 	"fieldRules": [{
@@ -47,7 +47,10 @@
 			"bsonType": "string",
 			"description": "店主id",
 			"label": "店主id",
-			"foreignKey": "uni-id-users._id"
+			"foreignKey": "uni-id-users._id",
+			"forceDefaultValue": {
+				"$env": "uid"
+			}
 		},
 		"city_code": {
 			"bsonType": "string",

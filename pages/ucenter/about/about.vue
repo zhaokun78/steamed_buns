@@ -3,10 +3,6 @@
 		<view class="box">
 			<image class="logoImg" :src="about.logo"></image>
 			<text class="tip appName">{{about.appName}}</text>
-			<text class="tip">Version {{version}}</text>
-			<!--Sansnn-uQRCode组件来源，插件市场：https://ext.dcloud.net.cn/plugin?id=1287 微调后-->
-			<Sansnn-uQRCode :text="about.download" :makeOnLoad="true" class="qrcode"></Sansnn-uQRCode>
-			<text class="tip">{{$t('about.sacnQR')}} {{about.appName}} {{$t('about.client')}}</text>
 		</view>
 		<view class="copyright">
 			<view class="agreement-box" v-for="(agreement,index) in about.agreements" :key="index">
@@ -14,31 +10,13 @@
 				<text class="hint" v-if="about.agreements.length-1>index">{{$t('about.and')}}</text>
 			</view>
 			<text class="hint">Copyright © {{year}}</text>
-			<text class="hint">{{about.company}}</text>
+			<text class="hint">技术支持：{{about.company}}</text>
 		</view>
 	</view>
 </template>
 <script>
-// #ifdef APP
-	import UniShare from '@/uni_modules/uni-share/js_sdk/uni-share.js';
-	const uniShare = new UniShare()
-// #endif
 	export default {
-		// #ifdef APP
-		onBackPress({from}) {
-			if(from=='backbutton'){
-				this.$nextTick(function(){
-					uniShare.hide()
-				})
-				return uniShare.isShow;
-			}
-		},
-		// #endif
-		onLoad() {
-			// #ifdef APP-PLUS
-			this.version = plus.runtime.version
-			// #endif
-		},
+		onLoad() {},
 		computed: {
 			uniStarterConfig() {
 				console.log(getApp());
@@ -47,15 +25,14 @@
 		},
 		data() {
 			return {
-				version: "V1.0.0",
-				year: "2020",
+				year: undefined,
 				about: {}
 			};
 		},
 		created() {
 			this.about = this.uniStarterConfig.about
 			uni.setNavigationBarTitle({
-				title: this.$t('about.about')+ " " + this.about.appName
+				title: this.$t('about.about') + " " + this.about.appName
 			})
 			this.year = (new Date).getFullYear()
 		},
@@ -84,7 +61,7 @@
 					},
 					{
 						"img": "/static/app-plus/sharemenu/wechatmoments.png",
-						"text":  this.$t('common').wechatBbs,
+						"text": this.$t('common').wechatBbs,
 						"share": {
 							"provider": "weixin",
 							"scene": "WXSceneTimeline"
@@ -92,7 +69,7 @@
 					},
 					{
 						"img": "/static/app-plus/sharemenu/weibo.png",
-						"text":  this.$t('common').weibo,
+						"text": this.$t('common').weibo,
 						"share": {
 							"provider": "sinaweibo"
 						}
@@ -142,6 +119,7 @@
 		box-sizing: border-box;
 		flex-direction: column;
 	}
+
 	/* #endif */
 	.about {
 		width: 750rpx;

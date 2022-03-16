@@ -65,7 +65,7 @@ export default {
 		//应用logo
 		"logo": "/static/logo.jpg",
 		//公司名称
-		"company": "昆明xx网络技术有限公司",
+		"company": "昆明蓝箭网络科技有限公司",
 		//口号
 		"slogan": "",
 		//政策协议
