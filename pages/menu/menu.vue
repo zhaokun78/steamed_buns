@@ -300,10 +300,10 @@
 			})
 			//选中第一个营业状态的店铺
 			for (let i = 0; i < sortedShops.length; i++) {
-				if (sortedShops[i].state == '营业') {
-					that.SET_STORE(sortedShops[i])
-					break
-				}
+				// if (sortedShops[i].state == '营业') {
+				that.SET_STORE(sortedShops[i])
+				break
+				// }
 			}
 
 			//加载商品分类

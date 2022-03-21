@@ -68,7 +68,12 @@
 			...mapMutations(['SET_STORE']),
 			init() {
 				const db = uniCloud.database()
-				db.collection('wfy-shop').get().then((r) => {
+
+				//从 storage 中加载当前用户的定位信息
+				const my_location = uni.getStorageSync('my_location')
+
+				//加载用户当前所在城市所有店铺
+				db.collection("wfy-shop").where("concat('156',city_code)== '" + my_location.ad_info.city_code + "' ").get().then((r) => {
 					console.log('wfy-shop', r)
 
 					//处理店铺营业状态

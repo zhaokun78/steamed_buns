@@ -1,16 +1,16 @@
 <template>
 	<view @click="onClick" :style="{width,height}">
-		<image v-if="cSrc" :style="{width,height}" :src="cSrc" :mode="mode"></image>
+		<image v-if="cSrc" :style="{width,height}" class="headimg border-radius-c" :src="cSrc" :mode="mode"></image>
 	</view>
 </template>
 
 <script>
 	export default {
 		name: "cloud-image",
-		emits:['click','switchChange'],
+		emits: ['click', 'switchChange'],
 		props: {
 			mode: {
-				type:String,
+				type: String,
 				default () {
 					return 'widthFix'
 				}
@@ -22,31 +22,31 @@
 				}
 			},
 			width: {
-				type:String,
+				type: String,
 				default () {
 					return '100rpx'
 				}
 			},
 			height: {
-				type:String,
+				type: String,
 				default () {
 					return '100rpx'
 				}
 			}
 		},
 		watch: {
-			src:{
+			src: {
 				handler(src) {
 					// console.log(src);
 					// console.log(src.substring(0, 8));
-					if (src&&src.substring(0, 8) == "cloud://") {
+					if (src && src.substring(0, 8) == "cloud://") {
 						uniCloud.getTempFileURL({
 							fileList: [src]
-						}).then(res=>{
+						}).then(res => {
 							// console.log(res);
 							this.cSrc = res.fileList[0].tempFileURL
 						})
-					}else{
+					} else {
 						this.cSrc = src
 					}
 				},
@@ -56,15 +56,24 @@
 		async mounted() {
 
 		},
-		methods:{
-			onClick(){
+		methods: {
+			onClick() {
 				this.$emit('click')
 			}
 		},
 		data() {
 			return {
-				cSrc:false
+				cSrc: false
 			};
 		}
 	}
 </script>
+<style>
+	.border-radius-c {
+		border-radius: 50%;
+	}
+
+	.headimg {
+		border: 1px solid #f5f5f5;
+	}
+</style>

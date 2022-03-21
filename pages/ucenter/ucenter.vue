@@ -14,6 +14,9 @@
 			<uni-list-item v-if="myShop" title="我的店铺" link="navigateTo" clickable="true" @click="gotoMyShop" show-extra-icon="true"
 				:extraIcon="{type:'shop',color:'#999'}">
 			</uni-list-item>
+			<uni-list-item v-if="myShop" title="店铺订单" link="navigateTo" clickable="true" @click="gotoShopOrder" show-extra-icon="true"
+				:extraIcon="{type:'compose',color:'#999'}">
+			</uni-list-item>
 			<uni-list-item v-for="(item,i) in sublist" :title="item.title" link="navigateTo" :rightText="item.rightText" :key="i" :clickable="true"
 				:to="item.to" @click="ucenterListClick(item)" :show-extra-icon="true" :extraIcon="{type:item.icon,color:'#999'}">
 				<template v-slot:footer>
@@ -97,6 +100,11 @@
 			gotoMyShop() {
 				uni.navigateTo({
 					url: '/pages/wfy-shop/edit?id=' + this.myShop._id
+				})
+			},
+			gotoShopOrder() {
+				uni.navigateTo({
+					url: '/pages/shop-order/shop-order'
 				})
 			},
 			/**

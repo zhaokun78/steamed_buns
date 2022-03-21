@@ -5,7 +5,7 @@
 		"business_state"
 	],
 	"permission": {
-		"read": "doc.owner_id == auth.uid",
+		"read": true,
 		"create": true,
 		"update": "doc.owner_id == auth.uid",
 		"delete": false
