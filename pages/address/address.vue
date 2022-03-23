@@ -119,7 +119,7 @@
 				this.SET_ADDRESS(address)
 				this.SET_ORDER_TYPE('takeout')
 				if (this.scene == 'menu') {
-					uni.switchTab({
+					uni.navigateTo({
 						url: '/pages/menu/menu'
 					})
 				} else if (this.scene == 'pay') {

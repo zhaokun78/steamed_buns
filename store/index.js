@@ -9,6 +9,7 @@ const store = new Vuex.Store({
 		orderType: 'takein',
 		address: {},
 		store: {},
+		cart: [],
 	},
 	mutations: {
 		SET_ORDER_TYPE(state, type) {
@@ -20,6 +21,19 @@ const store = new Vuex.Store({
 		SET_STORE(state, store) {
 			state.store = store
 		},
+		ADD_TO_CART(state, goods) {
+			state.cart.push(goods)
+			//uni.$emit('showCartRedDot', {})
+		},
+		MODIFY_GOODS_IN_CART(state, payload) {
+			Vue.set(state.cart, payload.index, payload.goods)
+		},
+		DELETE_GOODS_IN_CART(state, index) {
+			state.cart.splice(index, 1)
+		},
+		CLEAR_CART(state) {
+			state.cart = []
+		}
 	},
 	modules: {
 		user

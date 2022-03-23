@@ -44,20 +44,23 @@
 				"text": "已付款",
 				"value": 2
 			}, {
-				"text": "取餐中/配送中",
+				"text": "备餐中",
 				"value": 3
 			}, {
-				"text": "已完成",
+				"text": "待取餐/配送中",
 				"value": 4
 			}, {
-				"text": "退款审核中",
+				"text": "已完成",
 				"value": 5
 			}, {
-				"text": "退款中",
+				"text": "退款审核中",
 				"value": 6
 			}, {
-				"text": "已退款",
+				"text": "退款中",
 				"value": 7
+			}, {
+				"text": "已退款",
+				"value": 8
 			}, {
 				"text": "取消退款",
 				"value": -1
@@ -68,7 +71,7 @@
 				"text": "退款失败",
 				"value": -3
 			}],
-			"maximum": 7,
+			"maximum": 8,
 			"minimum": -3
 		},
 		"type": {

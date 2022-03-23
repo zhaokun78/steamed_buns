@@ -299,6 +299,13 @@
 				"enablePullDownRefresh": false
 			}
 
+		}, {
+			"path": "pages/cart/cart",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
 		}
 	],
 	"globalStyle": {
@@ -333,23 +340,23 @@
 		"list": [{
 			"pagePath": "pages/index/index",
 			"text": "首页",
-			"iconPath": "static/images/tabBar/index.png",
-			"selectedIconPath": "static/images/tabBar/index_selected.png"
+			"iconPath": "static/images/tabBar/home.png",
+			"selectedIconPath": "static/images/tabBar/home-active.png"
 		}, {
-			"pagePath": "pages/menu/menu",
-			"text": "点餐",
-			"iconPath": "static/images/tabBar/drink.png",
-			"selectedIconPath": "static/images/tabBar/drink_selected.png"
+			"pagePath": "pages/cart/cart",
+			"text": "购物车",
+			"iconPath": "static/images/tabBar/cart.png",
+			"selectedIconPath": "static/images/tabBar/cart-active.png"
 		}, {
 			"pagePath": "pages/take-foods/take-foods",
 			"text": "取餐",
-			"iconPath": "static/images/tabBar/take.png",
-			"selectedIconPath": "static/images/tabBar/take_selected.png"
+			"iconPath": "static/images/tabBar/shopping.png",
+			"selectedIconPath": "static/images/tabBar/shopping-active.png"
 		}, {
 			"pagePath": "pages/ucenter/ucenter",
 			"text": "我的",
-			"iconPath": "static/images/tabBar/mine.png",
-			"selectedIconPath": "static/images/tabBar/mine_selected.png"
+			"iconPath": "static/images/tabBar/user.png",
+			"selectedIconPath": "static/images/tabBar/user-active.png"
 		}]
 	}
 }

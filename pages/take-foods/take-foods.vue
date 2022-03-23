@@ -70,7 +70,7 @@
 				return util.formatOrderState(order)
 			},
 			gotoMenu() {
-				uni.switchTab({
+				uni.navigateTo({
 					url: '/pages/menu/menu'
 				})
 			},

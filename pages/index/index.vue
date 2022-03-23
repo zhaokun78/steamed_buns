@@ -69,6 +69,7 @@
 				</view>
 			</view>
 			-->
+			<!--
 			<view class="member-news">
 				<view class="header">
 					<view class="title">新品上市</view>
@@ -82,6 +83,7 @@
 					</swiper-item>
 				</swiper>
 			</view>
+			-->
 		</view>
 	</view>
 </template>
@@ -145,7 +147,7 @@
 		methods: {
 			takein() {
 				this.$store.commit('SET_ORDER_TYPE', 'takein')
-				uni.switchTab({
+				uni.navigateTo({
 					url: '/pages/menu/menu'
 				})
 			},

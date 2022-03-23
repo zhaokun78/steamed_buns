@@ -251,7 +251,7 @@
 				ads: [], //广告
 				cateScrollTop: 0,
 				menuScrollIntoView: '',
-				cart: [], //购物车
+				//cart: [], //购物车
 				goodDetailModalVisible: false, //是否显示商品详情模态框
 				good: {}, //当前商品
 				cartPopupVisible: false,
@@ -321,7 +321,7 @@
 			uni.hideLoading()
 		},
 		computed: {
-			...mapState(['orderType', 'address', 'store']),
+			...mapState(['orderType', 'address', 'store', 'cart']),
 			//计算单个饮品添加到购物车的数量
 			goodCartNum() {
 				return (id) => this.cart.reduce((acc, cur) => {
@@ -343,7 +343,7 @@
 				return this.cart.reduce((acc, cur) => acc + cur.number, 0)
 			},
 			getCartGoodsPrice() { //计算购物车总价
-				return this.cart.reduce((acc, cur) => acc + cur.number * cur.price, 0)
+				return this.cart.reduce((acc, cur) => acc + cur.number * cur.price, 0).toFixed(2)
 			},
 			disabledPay() { //是否达到起送价
 				return this.orderType == 'takeout' && (this.getCartGoodsPrice < this.store.min_price) ? true : false
@@ -354,7 +354,7 @@
 			}
 		},
 		methods: {
-			...mapMutations(['SET_ORDER_TYPE', 'SET_STORE']),
+			...mapMutations(['SET_ORDER_TYPE', 'SET_STORE', 'ADD_TO_CART', 'MODIFY_GOODS_IN_CART', 'DELETE_GOODS_IN_CART', 'CLEAR_CART']),
 			formatDistance(distance) {
 				return util.formatDistance(distance)
 			},
@@ -436,10 +436,15 @@
 
 					let obj = this.cart[index]
 					obj.number += num
-					this.$set(this.cart, index, obj)
+					// this.$set(this.cart, index, obj)
+					this.MODIFY_GOODS_IN_CART({
+						index: index,
+						goods: obj
+					})
 				} else {
 					good.number = num
-					this.cart.push(good)
+					//this.cart.push(good)
+					this.ADD_TO_CART(good)
 				}
 			},
 			handleReduceFromCart(good) {
@@ -449,10 +454,16 @@
 
 					let obj = this.cart[index]
 					obj.number -= 1
-					this.$set(this.cart, index, obj)
+					//this.$set(this.cart, index, obj)
 
 					if (obj.number <= 0) {
-						this.cart.splice(index, 1)
+						//this.cart.splice(index, 1)
+						this.DELETE_GOODS_IN_CART(index)
+					} else {
+						this.MODIFY_GOODS_IN_CART({
+							index: index,
+							goods: obj
+						})
 					}
 				}
 			},
@@ -515,21 +526,33 @@
 					}) => {
 						if (confirm) {
 							this.cartPopupVisible = false
-							this.cart = []
+							this.CLEAR_CART()
 						}
 					}
 				})
 			},
 			handleCartItemAdd(index) {
-				this.cart[index].number += 1
+				let obj = this.cart[index]
+				obj.number++
+				this.MODIFY_GOODS_IN_CART({
+					index: index,
+					goods: obj
+				})
 			},
 			handleCartItemReduce(index) {
-				if (this.cart[index].number === 1) {
-					this.cart.splice(index, 1)
+				let obj = this.cart[index]
+				obj.number -= 1
+
+				if (obj.number <= 0) {
+					this.DELETE_GOODS_IN_CART(index)
 				} else {
-					this.cart[index].number -= 1
+					this.MODIFY_GOODS_IN_CART({
+						index: index,
+						goods: obj
+					})
 				}
-				if (!this.cart.length) {
+
+				if (this.cart.length <= 0) {
 					this.cartPopupVisible = false
 				}
 			},
