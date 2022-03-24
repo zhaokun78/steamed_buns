@@ -28,22 +28,22 @@
 						</view>
 					</view>
 					<view class="right">
-						<view class="dinein" :class="{active: orderType == 'takein'}" @tap="SET_ORDER_TYPE('takein')">
+						<view class="dinein" :class="{active: orderType == 'takein'}" @tap="switchOrderType('takein')">
 							<text>自取</text>
 						</view>
-						<view class="takeout" :class="{active: orderType == 'takeout'}" @tap="takout">
+						<view class="takeout" :class="{active: orderType == 'takeout'}" @tap="switchOrderType('takeout')">
 							<text>外卖</text>
 						</view>
 					</view>
 				</view>
 				<view class="coupon">
-					<text class="title">新品上市</text>
-					<view class="iconfont iconarrow-right"></view>
+					<text class="title">店铺{{store.state}}中</text>
+					<!-- <view class="iconfont iconarrow-right"></view> -->	
 				</view>
 			</view>
 			<!-- 顶部 end -->
 
-			<view class="content">
+			<view class="content" v-if="store.state=='营业'">
 				<!-- 商品分类 begin -->
 				<scroll-view class="menus" :scroll-into-view="menuScrollIntoView" scroll-with-animation scroll-y>
 					<view class="wrapper">
@@ -359,21 +359,75 @@
 				return util.formatDistance(distance)
 			},
 			selectStore() {
-				uni.navigateTo({
-					url: '/pages/select-store/select-store'
-				})
+				if (this.cart.length > 0) {
+					let that = this
+					uni.showModal({
+						title: '确认',
+						content: '切换店铺将会清空购物车中的商品，是否确认？',
+						success: function(r) {
+							if (r.confirm) {
+								that.CLEAR_CART()
+								uni.navigateTo({
+									url: '/pages/select-store/select-store'
+								})
+							}
+						}
+					})
+				} else {
+					uni.navigateTo({
+						url: '/pages/select-store/select-store'
+					})
+				}
 			},
 			selectAddress() {
-				uni.navigateTo({
-					url: '/pages/address/address?is_choose=true'
-				})
+				if (this.cart.length > 0) {
+					let that = this
+					uni.showModal({
+						title: '确认',
+						content: '更换收货地址将会清空购物车中的商品，是否确认？',
+						success: function(r) {
+							if (r.confirm) {
+								that.CLEAR_CART()
+								uni.navigateTo({
+									url: '/pages/address/address?is_choose=true'
+								})
+							}
+						}
+					})
+				} else {
+					uni.navigateTo({
+						url: '/pages/address/address?is_choose=true'
+					})
+				}
 			},
-			takout() {
-				if (this.orderType == 'takeout') return
-
-				uni.navigateTo({
-					url: '/pages/address/address?is_choose=true'
-				})
+			switchOrderType(ot) {
+				if (this.cart.length > 0) {
+					let that = this
+					uni.showModal({
+						title: '确认',
+						content: '更改取餐方式将会清空购物车中的商品，是否确认？',
+						success: function(r) {
+							if (r.confirm) {
+								that.CLEAR_CART()
+								if (ot == 'takein') {
+									that.SET_ORDER_TYPE(ot)
+								} else if (ot == 'takeout') {
+									uni.navigateTo({
+										url: '/pages/address/address?is_choose=true'
+									})
+								}
+							}
+						}
+					})
+				} else {
+					if (ot == 'takein') {
+						this.SET_ORDER_TYPE(ot)
+					} else if (ot == 'takeout') {
+						uni.navigateTo({
+							url: '/pages/address/address?is_choose=true'
+						})
+					}
+				}
 			},
 			handleMenuTap(id) { //点击菜单项事件
 				console.log(id)

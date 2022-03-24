@@ -6,7 +6,7 @@
 	],
 	"permission": {
 		"read": true,
-		"create": true,
+		"create": false,
 		"update": "doc.owner_id == auth.uid",
 		"delete": false
 	},

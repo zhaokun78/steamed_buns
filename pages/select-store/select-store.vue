@@ -110,6 +110,7 @@
 				return util.formatDistance(distance)
 			},
 			selectStore(store) {
+				/*
 				if (store.state == '打烊') {
 					uni.showModal({
 						title: '提示',
@@ -119,6 +120,7 @@
 
 					return
 				}
+				*/
 
 				this.SET_STORE(store)
 				uni.navigateBack({
