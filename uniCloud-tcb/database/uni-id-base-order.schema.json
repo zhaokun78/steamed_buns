@@ -4,7 +4,7 @@
 		"create": true,
 		"delete": false,
 		"read": "doc.user_id == auth.uid",
-		"update": false
+		"update": "doc.user_id == auth.uid"
 	},
 	"properties": {
 		"_id": {
@@ -31,6 +31,10 @@
 				"$env": "uid"
 			},
 			"foreignKey": "uni-id-users._id"
+		},
+		"user_mobile": {
+			"bsonType": "string",
+			"description": "下单用户联系电话"
 		},
 		"status": {
 			"bsonType": "int",
@@ -88,8 +92,8 @@
 		},
 		"store": {
 			"bsonType": "string",
-			"description": "自提店铺Id",
-			"label": "自提店铺Id",
+			"description": "店铺Id",
+			"label": "店铺Id",
 			"foreignKey": "wfy-shop._id"
 		},
 		"address": {
@@ -107,6 +111,16 @@
 			"bsonType": "timestamp",
 			"description": "订单付款时间",
 			"label": "付款时间"
+		},
+		"accept_time": {
+			"bsonType": "timestamp",
+			"description": "订单接单时间",
+			"label": "接单时间"
+		},
+		"close_time": {
+			"bsonType": "timestamp",
+			"description": "订单关闭时间",
+			"label": "关闭时间"
 		},
 		"pay_type": {
 			"bsonType": "string",

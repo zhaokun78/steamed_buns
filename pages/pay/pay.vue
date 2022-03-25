@@ -21,7 +21,7 @@
 						<view class="flex-fill d-flex justify-content-between align-items-center">
 							<view class="title flex-fill">联系电话</view>
 							<view class="time">
-								<input class="text-right" placeholder="请输入手机号码" :value="form.mobile" />
+								<input class="text-right" placeholder="请输入手机号码" v-model="form.mobile" />
 							</view>
 							<button type="primary" open-type="getPhoneNumber" @getphonenumber="getphonenumber" style="font-size: 10px;">获取手机号</button>
 						</view>
@@ -164,6 +164,7 @@
 
 <script>
 	import {
+		mapGetters,
 		mapState,
 		mapMutations
 	} from 'vuex'
@@ -177,7 +178,6 @@
 		},
 		data() {
 			return {
-				cart: [],
 				form: {
 					mobile: ''
 				},
@@ -185,7 +185,10 @@
 			}
 		},
 		computed: {
-			...mapState(['orderType', 'address', 'store']),
+			...mapGetters({
+				userInfo: 'user/info',
+			}),
+			...mapState(['orderType', 'address', 'store', 'cart']),
 			total() {
 				return this.cart.reduce((acc, cur) => acc + cur.number, 0)
 			},
@@ -194,10 +197,10 @@
 			}
 		},
 		onLoad(option) {
-			this.cart = uni.getStorageSync('cart')
+			this.form.mobile = this.userInfo.mobile
 		},
 		methods: {
-			...mapMutations(['SET_ORDER']),
+			...mapMutations(['CLEAR_CART']),
 			selectAddress() {
 				uni.navigateTo({
 					url: '/pages/address/address?is_choose=true&scene=pay'
@@ -263,6 +266,7 @@
 					title: '请稍等'
 				})
 
+				let that = this
 				const db = uniCloud.database()
 				try {
 					let pickupNumber = null
@@ -280,6 +284,8 @@
 
 					//创建订单记录
 					let orderResult = await db.collection('uni-id-base-order').add({
+						paid_time: new Date().getTime(),
+						user_mobile: this.form.mobile,
 						pick_up_number: pickupNumber,
 						status: 2,
 						type: this.orderType == 'takein' ? 0 : 1,
@@ -328,9 +334,9 @@
 						content: '订单创建成功！',
 						success: function(res) {
 							if (res.confirm) {
-								uni.removeStorageSync('cart')
-								uni.reLaunch({
-									url: '/pages/list/list'
+								that.CLEAR_CART()
+								uni.switchTab({
+									url: '/pages/take-foods/take-foods'
 								})
 							}
 						}
@@ -348,7 +354,8 @@
 
 				//微信支付
 
-				//模拟支付回调
+				//支付回调
+				//设置 paid_time 字段
 			}
 		}
 	}

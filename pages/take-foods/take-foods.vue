@@ -3,7 +3,7 @@
 		<uni-segmented-control :current="curTabIndex" :values="tabItems" @clickItem="onClickTab" styleType="text" activeColor="#00e26d">
 		</uni-segmented-control>
 		<block v-if="curTabIndex==0">
-			<view v-if="paidOrders.length==0" class="d-flex w-100 h-100 flex-column just-content-center align-items-center">
+			<view v-if="currentOrders.length==0" class="d-flex w-100 h-100 flex-column just-content-center align-items-center">
 				<image src="/static/logo.jpg" class="drinks-img"></image>
 				<view class="tips d-flex flex-column align-items-center font-size-base text-color-assist">
 					<view>您还没有点单</view>
@@ -12,7 +12,7 @@
 				<button type="primary" class="drink-btn" size="default" @tap="gotoMenu">去点餐</button>
 			</view>
 			<template v-else>
-				<uni-card v-for="(order,index) in paidOrders" :key="order._id" mode="title" :title="order.store[0].name"
+				<uni-card v-for="(order,index) in currentOrders" :key="order._id" mode="title" :title="order.store[0].name"
 					:subTitle="order.type == 0 ? '自提' : '外卖'" :extra="'合计：￥'+ order.total_fee/100" @click="gotoOrderDetail(order)"
 					shadow="10px 10px 3px 10px rgba(0, 0, 0, 0.08)" :isShadow="true" note="true">
 					<view>
@@ -38,6 +38,32 @@
 				</uni-card>
 			</template>
 		</block>
+		<block v-if="curTabIndex==1">
+			<uni-card v-for="(order,index) in closedOrders" :key="order._id" mode="title" :title="order.store[0].name"
+				:subTitle="order.type == 0 ? '自提' : '外卖'" :extra="'合计：￥'+ order.total_fee/100" @click="gotoOrderDetail(order)"
+				shadow="10px 10px 3px 10px rgba(0, 0, 0, 0.08)" :isShadow="true" note="true">
+				<view>
+					<view>
+						<text class="redtxt">{{order.type == 0 ? '取餐号：'+order.pick_up_number:formatOrderState(order)}}</text>
+					</view>
+					<view>
+						<text class="txt">下单时间：{{ formatDateTime(order.create_time) }}</text>
+					</view>
+				</view>
+				<template v-slot:footer>
+					<view class="footer-box">
+						<view>
+							<image src='/static/images/mine/stxy.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
+							<text class="footer-box__item">收藏店铺</text>
+						</view>
+						<view @tap="navigationToStore(order.store[0])">
+							<image src='/static/images/mine/shdz.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
+							<text class="footer-box__item">店铺导航</text>
+						</view>
+					</view>
+				</template>
+			</uni-card>
+		</block>
 	</view>
 </template>
 
@@ -48,19 +74,28 @@
 			return {
 				curTabIndex: 0, //当前选择标签
 				tabItems: ['当前订单', '历史订单'],
-				paidOrders: [], //本人所有“已付款”订单
+				currentOrders: [], //本人所有当前订单
+				closedOrders: [], //本人所有已完成订单
 			}
 		},
 		methods: {
 			async onShow() {
 				const db = uniCloud.database()
 
-				//本人的所有已付款、取餐中/配送中订单
-				const order = db.collection('uni-id-base-order').where('user_id==$cloudEnv_uid && (status==2 || status==3)').getTemp()
-				const res = await db.collection(order, 'wfy-shop').get()
+				//本人的所有已付款、备餐中、待取餐/配送中订单
+				let order = await db.collection('uni-id-base-order').where('user_id==$cloudEnv_uid && (status==2 || status==3 || status==4)')
+					.getTemp()
+				let res = await db.collection(order, 'wfy-shop').get()
 				console.log('uni-id-base-order', res)
 				if (res.result.code == 0) {
-					this.paidOrders = res.result.data
+					this.currentOrders = res.result.data
+				}
+
+				order = await db.collection('uni-id-base-order').where('user_id==$cloudEnv_uid && status==5').getTemp()
+				res = await db.collection(order, 'wfy-shop').get()
+				console.log('uni-id-base-order', res)
+				if (res.result.code == 0) {
+					this.closedOrders = res.result.data
 				}
 			},
 			formatDateTime(date) {

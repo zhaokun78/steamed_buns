@@ -60,6 +60,18 @@
 								<view>下单时间</view>
 								<view class="font-weight-bold">{{ formatDateTime(order.create_time) }}</view>
 							</view>
+							<view class="pay-cell" v-if="order.paid_time">
+								<view>付款时间</view>
+								<view class="font-weight-bold">{{ formatDateTime(order.paid_time) }}</view>
+							</view>
+							<view class="pay-cell" v-if="order.accept_time">
+								<view>接单时间</view>
+								<view class="font-weight-bold">{{ formatDateTime(order.accept_time) }}</view>
+							</view>
+							<view class="pay-cell" v-if="order.close_time">
+								<view>关闭时间</view>
+								<view class="font-weight-bold">{{ formatDateTime(order.close_time) }}</view>
+							</view>
 							<view class="pay-cell">
 								<view>订单号</view>
 								<view class="font-weight-bold">{{ order._id }}</view>
@@ -78,6 +90,10 @@
 						<view class="pay-cell">
 							<view>取餐方式</view>
 							<view class="font-weight-bold">{{order.type == 0? '自提':'外卖'}}</view>
+						</view>
+						<view class="pay-cell">
+							<view>联系电话</view>
+							<view class="font-weight-bold">{{order.user_mobile}}</view>
 						</view>
 					</view>
 				</list-cell>

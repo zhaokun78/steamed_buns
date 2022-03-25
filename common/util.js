@@ -52,18 +52,21 @@ const util = {
 				return '已付款'
 				break
 			case 3:
-				return order.type == 0 ? '取餐中' : '配送中'
+				return '备餐中'
 				break
 			case 4:
-				return '已完成'
+				return order.type == 0 ? '待取餐' : '配送中'
 				break
 			case 5:
-				return '退款审核中'
+				return '已完成'
 				break
 			case 6:
-				return '退款中'
+				return '退款审核中'
 				break
 			case 7:
+				return '退款中'
+				break
+			case 8:
 				return '已退款'
 				break
 			case -1:
