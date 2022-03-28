@@ -29,15 +29,16 @@ class Gps {
 					});
 					console.error(err)
 					callback(false)
-					
+
 					// #ifdef APP-PLUS
 					await this.checkGpsIsOpen()
 					// #endif
-					
-					
+
+
 					// #ifdef MP-WEIXIN
 					if (err.errMsg == 'getLocation:fail auth deny') {
 						uni.showModal({
+							showCancel: false,
 							content: '应用无定位权限',
 							confirmText: '前往设置',
 							complete: (e) => {
@@ -56,7 +57,7 @@ class Gps {
 						uni.showModal({
 							content: '未开启定位权限，请前往手机系统设置中开启',
 							showCancel: false,
-							confirmText:"知道了"
+							confirmText: "知道了"
 						});
 					}
 					// #endif
@@ -79,7 +80,7 @@ class Gps {
 						var Intent = plus.android.importClass('android.content.Intent');
 						var Settings = plus.android.importClass('android.provider.Settings');
 						var intent = new Intent(Settings
-						.ACTION_LOCATION_SOURCE_SETTINGS); //可设置表中所有Action字段  
+							.ACTION_LOCATION_SOURCE_SETTINGS); //可设置表中所有Action字段  
 						main.startActivity(intent);
 					}
 				} else {

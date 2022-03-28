@@ -77,7 +77,7 @@
 	export default {
 		data() {
 			return {
-				banners: [],				
+				banners: [],
 			}
 		},
 		computed: {
@@ -98,33 +98,39 @@
 				}
 			})
 		},
-		async onShow() {
-			uni.showLoading({
-				title: "获取定位中"
-			})
-
-			//获取用户当前定位
-			let location = await gps.getLocation({
-				geocode: true
-			})
-			console.log('location', location)
-			if (location) {
-				//根据坐标逆向位置信息
-				let res = await util.reverseGeocoder(location)
-				console.log('reverseGeocoder', res)
-				uni.setStorage({
-					key: 'my_location',
-					data: res,
-					success: function() {
-						console.log('set my_location success')
-					},
-				})
-			}
-
-			uni.hideLoading()
+		onShow() {
+			this.getLocation()
 		},
 		methods: {
+			async getLocation() {
+				uni.showLoading({
+					title: "获取定位中"
+				})
+
+				//获取用户当前定位
+				let location = await gps.getLocation({
+					geocode: true
+				})
+				console.log('location', location)
+				if (location) {
+					//根据坐标逆向位置信息
+					let res = await util.reverseGeocoder(location)
+					console.log('reverseGeocoder', res)
+					uni.setStorage({
+						key: 'my_location',
+						data: res,
+						success: function() {
+							console.log('set my_location success')
+						},
+					})
+				}
+
+				uni.hideLoading()
+			},
 			takein() {
+				//判断是否已定位
+				//let my_location = uni.getStorageSync('my_location')
+				//if (my_location) {
 				if (this.orderType != 'takein') {
 					this.$store.commit('CLEAR_CART', undefined)
 				}
@@ -132,6 +138,9 @@
 				uni.navigateTo({
 					url: '/pages/menu/menu'
 				})
+				//} else {
+				//this.getLocation()
+				//}
 			},
 			takeout() {
 				if (this.orderType != 'takeout') {

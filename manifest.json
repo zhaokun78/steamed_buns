@@ -161,7 +161,7 @@
         "betterScopedSlots" : true,
         "permission" : {
             "scope.userLocation" : {
-                "desc" : "演示在onShow生命周期获取地理位置"
+                "desc" : "根据您的位置为您匹配取餐店铺"
             }
         }
     },
