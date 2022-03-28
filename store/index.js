@@ -8,7 +8,7 @@ const store = new Vuex.Store({
 	state: {
 		orderType: 'takein',
 		address: {},
-		store: {},
+		store: undefined,
 		cart: [],
 	},
 	mutations: {

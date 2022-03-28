@@ -265,45 +265,47 @@
 			})
 
 			let that = this
-
-			//从 storage 中加载当前用户的定位信息
-			const my_location = uni.getStorageSync('my_location')
-
-			//加载用户当前所在城市所有店铺
 			const db = uniCloud.database()
-			let res = await db.collection("wfy-shop").where("concat('156',city_code)== '" + my_location.ad_info.city_code + "' ").get()
-			console.log('wfy-shop', res)
-			let shops = []
-			if (res.result.code == 0) {
-				shops = res.result.data
-			}
 
-			//处理店铺营业状态
-			util.processShopBusinessState(shops)
+			if (that.store == undefined) {
+				//从 storage 中加载当前用户的定位信息
+				const my_location = uni.getStorageSync('my_location')
 
-			//批量计算距离
-			let targetArray = []
-			for (let i = 0; i < shops.length; i++) {
-				targetArray.push({
-					'latitude': shops[i].latitude,
-					'longitude': shops[i].longitude
+				//加载用户当前所在城市所有店铺
+				let res = await db.collection("wfy-shop").where("concat('156',city_code)== '" + my_location.ad_info.city_code + "' ").get()
+				console.log('wfy-shop', res)
+				let shops = []
+				if (res.result.code == 0) {
+					shops = res.result.data
+				}
+
+				//处理店铺营业状态
+				util.processShopBusinessState(shops)
+
+				//批量计算距离
+				let targetArray = []
+				for (let i = 0; i < shops.length; i++) {
+					targetArray.push({
+						'latitude': shops[i].latitude,
+						'longitude': shops[i].longitude
+					})
+				}
+				res = await util.calculateDistance(targetArray)
+				console.log('calculateDistance', res)
+				for (let i = 0; i < res.length; i++) {
+					shops[i].distance = res[i].distance
+				}
+
+				//按距离从近到远排序
+				const sortedShops = shops.sort(function(a, b) {
+					return a.distance - b.distance
 				})
-			}
-			res = await util.calculateDistance(targetArray)
-			console.log('calculateDistance', res)
-			for (let i = 0; i < res.length; i++) {
-				shops[i].distance = res[i].distance
-			}
-
-			//按距离从近到远排序
-			const sortedShops = shops.sort(function(a, b) {
-				return a.distance - b.distance
-			})
-			//选中第一个营业状态的店铺
-			for (let i = 0; i < sortedShops.length; i++) {
-				if (sortedShops[i].state == '营业') {
-					that.SET_STORE(sortedShops[i])
-					break
+				//选中第一个营业状态的店铺
+				for (let i = 0; i < sortedShops.length; i++) {
+					if (sortedShops[i].state == '营业') {
+						that.SET_STORE(sortedShops[i])
+						break
+					}
 				}
 			}
 
