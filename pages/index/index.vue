@@ -111,6 +111,7 @@
 			}),
 		},
 		onLoad() {
+			/*
 			const db = uniCloud.database();
 			db.collection('opendb-banner').get().then((r) => {
 				console.log('opendb-banner', r)
@@ -118,6 +119,7 @@
 					this.banners = r.result.data
 				}
 			})
+			*/
 		},
 		async onShow() {
 			uni.showLoading({

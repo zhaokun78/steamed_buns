@@ -102,6 +102,7 @@
 			}
 		},
 		onLoad() {
+			/*
 			console.log('cart onLoad')
 			uni.$on('showCartRedDot', function(data) {
 				console.log('on showCartRedDot')
@@ -115,6 +116,7 @@
 					}
 				})
 			})
+			*/
 		},
 		methods: {
 			...mapMutations(['MODIFY_GOODS_IN_CART', 'DELETE_GOODS_IN_CART', 'CLEAR_CART']),

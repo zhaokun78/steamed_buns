@@ -72,7 +72,7 @@
 				],
 			}
 		},
-		onLoad() {
+		onShow() {
 			db.collection('wfy-shop').where('owner_id==$cloudEnv_uid').limit(1).get().then((r) => {
 				console.log('wfy-shop', r)
 				if (r.result.code == 0) {

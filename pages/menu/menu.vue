@@ -38,7 +38,7 @@
 				</view>
 				<view class="coupon">
 					<text class="title">店铺{{store.state}}中</text>
-					<!-- <view class="iconfont iconarrow-right"></view> -->	
+					<!-- <view class="iconfont iconarrow-right"></view> -->
 				</view>
 			</view>
 			<!-- 顶部 end -->
@@ -254,6 +254,7 @@
 				//cart: [], //购物车
 				goodDetailModalVisible: false, //是否显示商品详情模态框
 				good: {}, //当前商品
+				wmqsje: 0, //外卖起送金额
 				cartPopupVisible: false,
 				sizeCalcState: false
 			}
@@ -300,10 +301,10 @@
 			})
 			//选中第一个营业状态的店铺
 			for (let i = 0; i < sortedShops.length; i++) {
-				// if (sortedShops[i].state == '营业') {
-				that.SET_STORE(sortedShops[i])
-				break
-				// }
+				if (sortedShops[i].state == '营业') {
+					that.SET_STORE(sortedShops[i])
+					break
+				}
 			}
 
 			//加载商品分类
@@ -317,6 +318,11 @@
 			const goods = await db.collection('wfy-goods-categories', 'wfy-goods').get()
 			console.log('wfy-goods', goods)
 			that.goods = goods.result.data
+
+			//加载系统参数
+			const parameter = await db.collection('wfy-system-parameter').where("name=='外卖起送金额'").limit(1).get()
+			console.log('wfy-system-parameter', parameter)
+			that.wmqsje = parseFloat(parameter.result.data[0].value)
 
 			uni.hideLoading()
 		},
@@ -346,11 +352,11 @@
 				return this.cart.reduce((acc, cur) => acc + cur.number * cur.price, 0).toFixed(2)
 			},
 			disabledPay() { //是否达到起送价
-				return this.orderType == 'takeout' && (this.getCartGoodsPrice < this.store.min_price) ? true : false
+				return this.orderType == 'takeout' && (this.getCartGoodsPrice < this.wmqsje) ? true : false
 			},
 			spread() { //差多少元起送
 				if (this.orderType != 'takeout') return
-				return parseFloat((this.store.min_price - this.getCartGoodsPrice).toFixed(2))
+				return parseFloat((this.wmqsje - this.getCartGoodsPrice).toFixed(2))
 			}
 		},
 		methods: {
@@ -614,7 +620,6 @@
 				uni.showLoading({
 					title: '加载中'
 				})
-				uni.setStorageSync('cart', JSON.parse(JSON.stringify(this.cart)))
 
 				uni.navigateTo({
 					url: '/pages/pay/pay'
