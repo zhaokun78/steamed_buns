@@ -82,7 +82,7 @@
 	export default {
 		data() {
 			return {
-
+				wmqsje: 0, //外卖起送金额
 			}
 		},
 		computed: {
@@ -94,14 +94,21 @@
 				return this.cart.reduce((acc, cur) => acc + cur.number * cur.price, 0).toFixed(2)
 			},
 			disabledPay() { //是否达到起送价
-				return this.orderType == 'takeout' && (this.getCartGoodsPrice < this.store.min_price) ? true : false
+				return this.orderType == 'takeout' && (this.getCartGoodsPrice < this.wmqsje) ? true : false
 			},
 			spread() { //差多少元起送
 				if (this.orderType != 'takeout') return
-				return parseFloat((this.store.min_price - this.getCartGoodsPrice).toFixed(2))
+				return parseFloat((this.wmqsje - this.getCartGoodsPrice).toFixed(2))
 			}
 		},
-		onLoad() {
+		onShow() {
+			//加载系统参数
+			const db = uniCloud.database()			
+			db.collection('wfy-system-parameter').where("name=='外卖起送金额'").limit(1).get().then((parameter) => {
+				console.log('wfy-system-parameter', parameter)
+				this.wmqsje = parseFloat(parameter.result.data[0].value)
+			})
+
 			/*
 			console.log('cart onLoad')
 			uni.$on('showCartRedDot', function(data) {
