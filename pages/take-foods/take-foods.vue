@@ -44,10 +44,10 @@
 				shadow="10px 10px 3px 10px rgba(0, 0, 0, 0.08)" :isShadow="true" note="true">
 				<view>
 					<view>
-						<text class="redtxt">{{order.type == 0 ? '取餐号：'+order.pick_up_number:formatOrderState(order)}}</text>
+						<text class="redtxt">已完成</text>
 					</view>
 					<view>
-						<text class="txt">下单时间：{{ formatDateTime(order.create_time) }}</text>
+						<text class="txt">关闭订单时间：{{ formatDateTime(order.close_time) }}</text>
 					</view>
 				</view>
 				<template v-slot:footer>
