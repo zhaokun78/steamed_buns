@@ -307,7 +307,16 @@
 			}
 
 		}
-	],
+	    ,{
+            "path" : "pages/index/tuancan/tuancan",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-starter",

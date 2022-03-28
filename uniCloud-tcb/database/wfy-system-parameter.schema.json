@@ -34,6 +34,13 @@
 			"bsonType": "string",
 			"description": "参数说明",
 			"label": "参数说明"
+		},
+		"image": {
+			"bsonType": "file",
+			"title": "图片",
+			"description": "图片",
+			"fileMediaType": "image",
+			"fileExtName": "jpg,png"
 		}
 	}
 }

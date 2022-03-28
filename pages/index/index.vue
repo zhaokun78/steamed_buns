@@ -1,8 +1,12 @@
 <template>
 	<view class="container">
-		<view class="banner">
-			<image src="../../static/back.jpg" mode="aspectFill" class="bg"></image>
-		</view>
+		<swiper autoplay=true>
+			<swiper-item v-for="(item,index) in banners" :key="item._id">
+				<view class="banner">
+					<image :src="item.bannerfile.url" mode="aspectFill" class="bg"></image>
+				</view>
+			</swiper-item>
+		</swiper>
 		<view class="content">
 			<view class="entrance">
 				<view class="item" @tap="takein">
@@ -15,81 +19,53 @@
 				</view>
 			</view>
 			<view class="info">
-				<cloud-image width="100rpx" height="100rpx" v-if="hasLogin && userInfo.avatar_file && userInfo.avatar_file.url"
-					:src="userInfo.avatar_file.url">
-				</cloud-image>
-				<image v-else class="logo-img" src="@/static/uni-center/defaultAvatarUrl.png"></image>
-				<view class="integral_section" @tap="integrals">
+				<image class="logo-img" mode="widthFix" src="@/static/images/index/fresh.gif"></image>
+				<view class="integral_section">
 					<view class="top">
-						<text class="title">{{hasLogin? userInfo.nickname:'游客'}}</text>
+						<text class="title">锁鲜产品</text>
+					</view>
+					<view class="bottom">
+						<text>短保锁鲜装，看得到的新鲜</text>
 					</view>
 				</view>
-				<block v-if="hasLogin">
-					<view class="integral_section" @tap="integrals">
-						<view class="top">
-							<text class="title">我的积分</text>
-							<text class="value">411</text>
-						</view>
-					</view>
-					<view class="qrcode_section" @tap="memberCode">
-						<image src="/static/images/index/qrcode.png"></image>
-						<text>会员码</text>
-					</view>
-				</block>
 			</view>
-			<!--
 			<view class="navigators">
 				<view class="left">
 					<view class="grid flex-column just-content-center">
 						<view class="d-flex align-items-center">
 							<image src="/static/images/index/csc.png" class="mark-img"></image>
-							<view class="font-size-sm text-color-base">奈雪的茶商城</view>
+							<view class="font-size-sm text-color-base">会员中心</view>
 						</view>
-						<view class="text-color-assist" style="margin-left: 40rpx; font-size: 20rpx;">优质茶礼盒，网红零食</view>
+						<view class="text-color-assist" style="margin-left: 40rpx; font-size: 20rpx;"></view>
 					</view>
 					<view class="grid justify-content-end align-items-end">
 						<image src="/static/images/index/yzclh.png" class="yzclh-img" mode="heightFix"></image>
 					</view>
 				</view>
 				<view class="right">
-					<view class="tea-activity" @tap="invite">
+					<view class="tea-activity" @tap="viewTuanCanPic">
 						<image src="/static/images/index/mcsb.png" class="mark-img"></image>
-						<view>买茶送包</view>
+						<view>团餐</view>
 						<view class="right-img">
 							<image src="/static/images/index/mcsb_bg.png" mode="widthFix"></image>
 						</view>
 					</view>
 					<view class="member-gifts" @tap="packages">
 						<image src="/static/images/index/hyjb.png" class="mark-img"></image>
-						<view>会员劵包</view>
+						<view>加盟</view>
 						<view class="right-img">
 							<image src="/static/images/index/hyjb_bg.png" mode="widthFix"></image>
 						</view>
 					</view>
 				</view>
 			</view>
-			-->
-			<!--
-			<view class="member-news">
-				<view class="header">
-					<view class="title">新品上市</view>
-					<view class="iconfont iconRightbutton"></view>
-				</view>
-				<swiper autoplay=true>
-					<swiper-item v-for="(item,index) in banners" :key="item._id">
-						<view class="item">
-							<image :src="item.bannerfile.url" mode="widthFix"></image>
-						</view>
-					</swiper-item>
-				</swiper>
-			</view>
-			-->
 		</view>
 	</view>
 </template>
 
 <script>
 	import {
+		mapState,
 		mapGetters
 	} from 'vuex';
 
@@ -101,25 +77,26 @@
 	export default {
 		data() {
 			return {
-				banners: []
+				banners: [],				
 			}
 		},
 		computed: {
+			...mapState(['orderType']),
 			...mapGetters({
 				userInfo: 'user/info',
 				hasLogin: 'user/hasLogin'
 			}),
 		},
 		onLoad() {
-			/*
 			const db = uniCloud.database();
+
+			//加载轮播图
 			db.collection('opendb-banner').get().then((r) => {
 				console.log('opendb-banner', r)
 				if (r.result.code == 0) {
 					this.banners = r.result.data
 				}
 			})
-			*/
 		},
 		async onShow() {
 			uni.showLoading({
@@ -148,20 +125,28 @@
 		},
 		methods: {
 			takein() {
+				if (this.orderType != 'takein') {
+					this.$store.commit('CLEAR_CART', undefined)
+				}
 				this.$store.commit('SET_ORDER_TYPE', 'takein')
 				uni.navigateTo({
 					url: '/pages/menu/menu'
 				})
 			},
 			takeout() {
+				if (this.orderType != 'takeout') {
+					this.$store.commit('CLEAR_CART', undefined)
+				}
 				this.$store.commit('SET_ORDER_TYPE', 'takeout')
 				uni.navigateTo({
 					url: "/pages/address/address?is_choose=true"
 				})
 			},
-			integrals() {},
-			packages() {},
-			memberCode() {},
+			viewTuanCanPic() {
+				uni.navigateTo({
+					url: './tuancan/tuancan'
+				})
+			}
 		}
 	}
 </script>
@@ -210,7 +195,7 @@
 
 	.entrance {
 		position: relative;
-		margin-top: -80rpx;
+		margin-top: -40rpx;
 		margin-bottom: 30rpx;
 		border-radius: 10rpx;
 		background-color: #ffffff;
@@ -245,7 +230,7 @@
 			}
 
 			.title {
-				font-size: 30rpx;
+				font-size: 40rpx;
 				color: $text-color-base;
 				font-weight: 600;
 			}
@@ -275,7 +260,8 @@
 
 				.title {
 					color: $text-color-base;
-					font-size: $font-size-base;
+					font-size: 40rpx;
+					font-weight: bold;
 					margin-right: 10rpx;
 				}
 
@@ -438,8 +424,8 @@
 	}
 
 	.logo-img {
-		width: 100rpx;
-		height: 100rpx;
-		border-radius: 100rpx;
+		width: 200rpx;
+		// height: 100rpx;
+		// border-radius: 100rpx;
 	}
 </style>
