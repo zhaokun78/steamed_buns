@@ -103,16 +103,16 @@
 		},
 		methods: {
 			async getLocation() {
-				uni.showLoading({
-					title: "获取定位中"
-				})
-
 				//获取用户当前定位
 				let location = await gps.getLocation({
 					geocode: true
 				})
 				console.log('location', location)
 				if (location) {
+					uni.showLoading({
+						title: "获取定位中"
+					})
+
 					//根据坐标逆向位置信息
 					let res = await util.reverseGeocoder(location)
 					console.log('reverseGeocoder', res)
@@ -123,9 +123,8 @@
 							console.log('set my_location success')
 						},
 					})
+					uni.hideLoading()
 				}
-
-				uni.hideLoading()
 			},
 			takein() {
 				if (this.orderType != 'takein') {
