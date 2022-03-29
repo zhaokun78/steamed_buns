@@ -1,5 +1,6 @@
 <template>
 	<view class="container">
+		<uni-nav-bar :fixed="true" status-bar left-icon="left" left-text="返回" title="点餐" @clickLeft="back" />
 		<!-- 主体 begin -->
 		<view class="main" v-if="goods.length>0">
 			<!-- 顶部 begin -->
@@ -265,7 +266,7 @@
 				sizeCalcState: false
 			}
 		},
-		async onLoad() {
+		async onShow() {
 			uni.showLoading({
 				title: '加载中...'
 			})
@@ -293,6 +294,9 @@
 					shops = res.result.data
 				}
 				if (shops.length == 0) {
+					this.goods_categories = []
+					this.currentCateI = undefined
+					this.goods = []
 					uni.hideLoading()
 					return
 				}
@@ -652,6 +656,11 @@
 					url: '/pages/pay/pay'
 				})
 				uni.hideLoading()
+			},
+			back() {
+				uni.switchTab({
+					url: '/pages/index/index'
+				})
 			}
 		}
 	};

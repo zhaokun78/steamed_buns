@@ -223,6 +223,7 @@
 		{
 			"path": "pages/menu/menu",
 			"style": {
+				"navigationStyle": "custom",
 				"navigationBarTitleText": "味丰源云南包子王",
 				"navigationBarTextStyle": "black",
 				"navigationBarBackgroundColor": "#ffffff"
@@ -306,17 +307,15 @@
 				"enablePullDownRefresh": false
 			}
 
+		}, {
+			"path": "pages/index/tuancan/tuancan",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
 		}
-	    ,{
-            "path" : "pages/index/tuancan/tuancan",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-starter",
