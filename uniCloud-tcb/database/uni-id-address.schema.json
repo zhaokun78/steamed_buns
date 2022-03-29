@@ -30,6 +30,10 @@
 			"foreignKey": "opendb-city-china.code",
 			"title": "省市区"
 		},
+		"city_code": {
+			"bsonType": "string",
+			"description": "城市编码"
+		},
 		"address": {
 			"bsonType": "string",
 			"description": "省市区后面的详细住址，包含街道小区房间号",

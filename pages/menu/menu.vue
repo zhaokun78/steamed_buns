@@ -273,16 +273,28 @@
 			let that = this
 			const db = uniCloud.database()
 
-			if (that.store == undefined) {
-				//从 storage 中加载当前用户的定位信息
-				const my_location = uni.getStorageSync('my_location')
+			//选择店铺的逻辑 start
+			if ((that.orderType == 'takein' && that.store == undefined) || (that.orderType == 'takeout')) {
+				let city_code = undefined
+				if (that.orderType == 'takein') {
+					//自提方式：从 storage 中加载当前用户的定位信息
+					const my_location = uni.getStorageSync('my_location')
+					city_code = my_location.ad_info.city_code
+				} else {
+					//外卖方式：充用户选择的地址中获取区域编码
+					city_code = '156' + that.address.city_code
+				}
 
 				//加载用户当前所在城市所有店铺
-				let res = await db.collection("wfy-shop").where("concat('156',city_code)== '" + my_location.ad_info.city_code + "' ").get()
+				let res = await db.collection("wfy-shop").where("concat('156',city_code)== '" + city_code + "' ").get()
 				console.log('wfy-shop', res)
 				let shops = []
 				if (res.result.code == 0) {
 					shops = res.result.data
+				}
+				if (shops.length == 0) {
+					uni.hideLoading()
+					return
 				}
 
 				//处理店铺营业状态
@@ -306,9 +318,6 @@
 				const sortedShops = shops.sort(function(a, b) {
 					return a.distance - b.distance
 				})
-				if (sortedShops.length == 0) {
-					return
-				}
 
 				//选中第一个营业状态的店铺
 				for (let i = 0; i < sortedShops.length; i++) {
@@ -323,6 +332,7 @@
 					that.SET_STORE(sortedShops[0])
 				}
 			}
+			//选择店铺的逻辑 end
 
 			//加载商品分类
 			const categories = await db.collection('wfy-goods-categories').orderBy('sort').get()

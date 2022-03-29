@@ -94,67 +94,73 @@
 
 				const db = uniCloud.database();
 
-				if (this.form.id) {
-					db.collection('uni-id-address').where({
-							_id: this.form.id
-						}).update({
-							'name': this.form.accept_name,
-							'sex': this.form.sex,
-							'mobile': this.form.mobile,
-							'area_code': this.form.area_code,
-							'address': this.form.address,
-						}).then((res) => {
-							uni.showModal({
-								showCancel: false,
-								title: '提示',
-								content: '编辑地址成功！',
-								success: function(r) {
-									if (r.confirm) {
-										uni.redirectTo({
-											url: '/pages/address/address?is_choose=true'
-										})
+				//根据区级编码找到城市编码
+				db.collection('opendb-city-china').where("code == '" + this.form.area_code + "'").limit(1).get().then((city) => {
+					console.log('city', city)
+					if (this.form.id) {
+						db.collection('uni-id-address').where({
+								_id: this.form.id
+							}).update({
+								'name': this.form.accept_name,
+								'sex': this.form.sex,
+								'mobile': this.form.mobile,
+								'area_code': this.form.area_code,
+								'city_code': city.result.data[0].parent_code,
+								'address': this.form.address,
+							}).then((res) => {
+								uni.showModal({
+									showCancel: false,
+									title: '提示',
+									content: '编辑地址成功！',
+									success: function(r) {
+										if (r.confirm) {
+											uni.redirectTo({
+												url: '/pages/address/address?is_choose=true'
+											})
+										}
 									}
-								}
+								})
 							})
-						})
-						.catch((err) => {
-							uni.showModal({
-								content: err.message || '编辑地址失败',
-								showCancel: false
+							.catch((err) => {
+								uni.showModal({
+									content: err.message || '编辑地址失败',
+									showCancel: false
+								})
+							}).finally(() => {
+								uni.hideLoading()
 							})
-						}).finally(() => {
-							uni.hideLoading()
-						})
-				} else {
-					db.collection('uni-id-address').add({
-							'name': this.form.accept_name,
-							'sex': this.form.sex,
-							'mobile': this.form.mobile,
-							'area_code': this.form.area_code,
-							'address': this.form.address,
-						}).then((res) => {
-							uni.showModal({
-								showCancel: false,
-								title: '提示',
-								content: '新增地址成功！',
-								success: function(r) {
-									if (r.confirm) {
-										uni.redirectTo({
-											url: '/pages/address/address?is_choose=true'
-										})
+					} else {
+						db.collection('uni-id-address').add({
+								'name': this.form.accept_name,
+								'sex': this.form.sex,
+								'mobile': this.form.mobile,
+								'area_code': this.form.area_code,
+								'city_code': city.result.data[0].parent_code,
+								'address': this.form.address,
+							}).then((res) => {
+								uni.showModal({
+									showCancel: false,
+									title: '提示',
+									content: '新增地址成功！',
+									success: function(r) {
+										if (r.confirm) {
+											uni.redirectTo({
+												url: '/pages/address/address?is_choose=true'
+											})
+										}
 									}
-								}
+								})
 							})
-						})
-						.catch((err) => {
-							uni.showModal({
-								content: err.message || '新增地址失败',
-								showCancel: false
+							.catch((err) => {
+								uni.showModal({
+									content: err.message || '新增地址失败',
+									showCancel: false
+								})
+							}).finally(() => {
+								uni.hideLoading()
 							})
-						}).finally(() => {
-							uni.hideLoading()
-						})
-				}
+					}
+				})
 			}
 		}
 	}

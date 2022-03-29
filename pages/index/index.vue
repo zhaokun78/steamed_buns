@@ -128,9 +128,6 @@
 				uni.hideLoading()
 			},
 			takein() {
-				//判断是否已定位
-				//let my_location = uni.getStorageSync('my_location')
-				//if (my_location) {
 				if (this.orderType != 'takein') {
 					this.$store.commit('CLEAR_CART', undefined)
 				}
@@ -138,9 +135,6 @@
 				uni.navigateTo({
 					url: '/pages/menu/menu'
 				})
-				//} else {
-				//this.getLocation()
-				//}
 			},
 			takeout() {
 				if (this.orderType != 'takeout') {
