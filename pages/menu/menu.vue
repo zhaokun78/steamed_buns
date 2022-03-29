@@ -120,6 +120,12 @@
 			</view>
 			<!-- 购物车栏 end -->
 		</view>
+		<view v-else class="d-flex w-100 h-100 flex-column just-content-center align-items-center">
+			<image src="/static/images/no-shop.png" class="drinks-img" mode="aspectFit"></image>
+			<view class="tips d-flex flex-column align-items-center font-size-base text-color-assist">
+				<view>您的城市暂时没有店铺，敬请期待！</view>
+			</view>
+		</view>
 		<!-- 主体 end -->
 
 		<!-- 商品详情模态框 begin -->
@@ -300,12 +306,21 @@
 				const sortedShops = shops.sort(function(a, b) {
 					return a.distance - b.distance
 				})
+				if (sortedShops.length == 0) {
+					return
+				}
+
 				//选中第一个营业状态的店铺
 				for (let i = 0; i < sortedShops.length; i++) {
 					if (sortedShops[i].state == '营业') {
 						that.SET_STORE(sortedShops[i])
 						break
 					}
+				}
+
+				//如果全部都打烊了，就只能设置第一个店铺了
+				if (that.store == undefined) {
+					that.SET_STORE(sortedShops[0])
 				}
 			}
 
