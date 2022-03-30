@@ -13,7 +13,7 @@
 		<view class="introduce-section">
 			<text class="title">{{goods.name}}</text>
 			<view class="price-box">
-				<text class="price">￥{{goods.price}}</text>
+				<text class="price">￥{{goods.price/100}}</text>
 			</view>
 		</view>
 
@@ -36,7 +36,7 @@
 			</navigator>
 			<view class="action-btn-group">
 				<button type="primary" class=" action-btn no-border buy-now-btn" @click="buy">立即购买</button>
-				<button type="primary" class=" action-btn no-border add-cart-btn">加入购物车</button>
+				<button type="primary" class=" action-btn no-border add-cart-btn" @click="addToCart">加入购物车</button>
 			</view>
 		</view>
 	</view>
@@ -45,6 +45,10 @@
 <script>
 	import htmlParser from '@/common/html-parser'
 	import util from '@/common/util'
+	import {
+		mapMutations,
+	} from 'vuex'
+
 	export default {
 		data() {
 			return {
@@ -64,7 +68,28 @@
 			})
 		},
 		methods: {
-			buy() {},
+			...mapMutations(['ADD_TO_CART', 'CLEAR_CART']),
+			buy() {
+				this.CLEAR_CART()
+				this.ADD_TO_CART(this.goods)
+				uni.navigateTo({
+					url: '/pages/pay/pay'
+				})
+			},
+			addToCart() {
+				this.ADD_TO_CART(this.goods)
+				uni.showModal({
+					title: '加入购物车成功',
+					content: '是否现在就去购物车？',
+					success: function(res) {
+						if (res.confirm) {
+							uni.switchTab({
+								url: '/pages/cart/cart'
+							})
+						}
+					}
+				})
+			}
 		},
 
 	}
@@ -91,6 +116,10 @@
 
 	.icon-home:before {
 		content: "\e608";
+	}
+
+	.icon-gouwuche_empty {
+		background-image: '../../static/images/tab-cart.png';
 	}
 
 	.icon-gouwuche:before {

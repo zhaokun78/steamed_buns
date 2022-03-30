@@ -525,29 +525,8 @@
 				})
 				this.sizeCalcState = true
 			},
-			handleAddToCart(good, num) { //添加到购物车
-				const index = this.cart.findIndex(item => {
-					if (good.use_property) {
-						return (item._id === good._id) && (item.props_text === good.props_text)
-					} else {
-						return item._id === good._id
-					}
-				})
-				if (index > -1) {
-					// this.cart[index].number += num
-
-					let obj = this.cart[index]
-					obj.number += num
-					// this.$set(this.cart, index, obj)
-					this.MODIFY_GOODS_IN_CART({
-						index: index,
-						goods: obj
-					})
-				} else {
-					good.number = num
-					//this.cart.push(good)
-					this.ADD_TO_CART(good)
-				}
+			handleAddToCart(good, num) {
+				this.ADD_TO_CART(good)
 			},
 			handleReduceFromCart(good) {
 				const index = this.cart.findIndex(item => item._id === good._id)
@@ -570,11 +549,17 @@
 				}
 			},
 			showGoodDetailModal(good) {
-				this.good = JSON.parse(JSON.stringify({
-					...good,
-					number: 1
-				}))
-				this.goodDetailModalVisible = true
+				if (this.isFresh) {
+					uni.navigateTo({
+						url: '/pages/fresh-product/fresh-product?id=' + good._id
+					})
+				} else {
+					this.good = JSON.parse(JSON.stringify({
+						...good,
+						number: 1
+					}))
+					this.goodDetailModalVisible = true
+				}
 			},
 			closeGoodDetailModal() { //关闭饮品详情模态框
 				this.goodDetailModalVisible = false

@@ -174,7 +174,6 @@
 				uni.showLoading({
 					title: '加载中'
 				})
-				uni.setStorageSync('cart', JSON.parse(JSON.stringify(this.cart)))
 
 				uni.navigateTo({
 					url: '/pages/pay/pay'

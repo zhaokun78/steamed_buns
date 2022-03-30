@@ -22,8 +22,18 @@ const store = new Vuex.Store({
 			state.store = store
 		},
 		ADD_TO_CART(state, goods) {
-			state.cart.push(goods)
-			//uni.$emit('showCartRedDot', {})
+			const index = state.cart.findIndex(item => {
+				return item._id === goods._id
+			})
+
+			if (index > -1) {
+				let obj = state.cart[index]
+				obj.number++
+				Vue.set(state.cart, index, obj)
+			} else {
+				goods.number = 1
+				state.cart.push(goods)
+			}
 		},
 		MODIFY_GOODS_IN_CART(state, payload) {
 			Vue.set(state.cart, payload.index, payload.goods)

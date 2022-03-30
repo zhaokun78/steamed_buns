@@ -81,7 +81,6 @@
 								</view>
 							</view>
 							<view class="text-truncate font-size-base text-color-assist">
-								{{ item.goods_desc }}
 							</view>
 						</view>
 					</list-cell>
