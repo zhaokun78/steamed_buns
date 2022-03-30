@@ -37,9 +37,9 @@
 			"trim": "both"
 		},
 		"price": {
-			"bsonType": "double",
-			"description": "商品价格（元）",
-			"label": "商品价格（元）"
+			"bsonType": "int",
+			"description": "商品价格（分）",
+			"label": "商品价格（分）"
 		},
 		"goods_banner_imgs": {
 			"bsonType": "array",

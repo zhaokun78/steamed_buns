@@ -77,7 +77,7 @@
 								</view>
 								<view class="d-flex flex-fill justify-content-between align-items-center text-color-base font-size-lg">
 									<view>x{{ item.number }}</view>
-									<view>￥{{ item.price }}</view>
+									<view>￥{{ item.price/100 }}</view>
 								</view>
 							</view>
 							<view class="text-truncate font-size-base text-color-assist">
@@ -193,7 +193,7 @@
 				return this.cart.reduce((acc, cur) => acc + cur.number, 0)
 			},
 			amount() {
-				return this.cart.reduce((acc, cur) => acc + cur.number * cur.price, 0)
+				return this.cart.reduce((acc, cur) => acc + cur.number * cur.price, 0) / 100
 			}
 		},
 		onLoad(option) {
@@ -290,7 +290,7 @@
 						status: 2,
 						type: this.orderType == 'takein' ? 0 : 1,
 						store: this.store._id,
-						total_fee: this.cart.reduce((acc, cur) => acc + (cur.number * cur.price) * 100, 0),
+						total_fee: this.cart.reduce((acc, cur) => acc + cur.number * cur.price, 0),
 						is_refund: false,
 					})
 					console.log('add uni-id-base-order', orderResult)

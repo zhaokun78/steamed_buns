@@ -26,7 +26,7 @@
 								<view class="props">{{ item.props_text }}</view>
 							</view>
 							<view class="center">
-								<text>￥{{ item.price }}</text>
+								<text>￥{{ item.price/100 }}</text>
 							</view>
 							<view class="right">
 								<button type="default" plain size="mini" class="btn" hover-class="none" @tap="handleCartItemReduce(index)">
@@ -63,7 +63,7 @@
 					<image src="/static/images/menu/cart.png" class="cart-img"></image>
 					<view class="tag">{{ getCartGoodsNumber }}</view>
 				</view>
-				<view class="price">￥{{ getCartGoodsPrice }}</view>
+				<view class="price">￥{{ getCartGoodsPrice/100 }}</view>
 				<button type="primary" class="pay-btn" @tap="toPay" :disabled="disabledPay">
 					{{ disabledPay ? `差${spread}元起送` : '去结算' }}
 				</button>
@@ -82,7 +82,7 @@
 	export default {
 		data() {
 			return {
-				wmqsje: 0, //外卖起送金额
+				wmqsje: 0, //外卖起送金额（分）
 			}
 		},
 		computed: {
@@ -91,22 +91,22 @@
 				return this.cart.reduce((acc, cur) => acc + cur.number, 0)
 			},
 			getCartGoodsPrice() { //计算购物车总价
-				return this.cart.reduce((acc, cur) => acc + cur.number * cur.price, 0).toFixed(2)
+				return this.cart.reduce((acc, cur) => acc + cur.number * cur.price, 0)
 			},
 			disabledPay() { //是否达到起送价
 				return this.orderType == 'takeout' && (this.getCartGoodsPrice < this.wmqsje) ? true : false
 			},
 			spread() { //差多少元起送
 				if (this.orderType != 'takeout') return
-				return parseFloat((this.wmqsje - this.getCartGoodsPrice).toFixed(2))
+				return (this.wmqsje - this.getCartGoodsPrice) / 100
 			}
 		},
 		onShow() {
 			//加载系统参数
-			const db = uniCloud.database()			
+			const db = uniCloud.database()
 			db.collection('wfy-system-parameter').where("name=='外卖起送金额'").limit(1).get().then((parameter) => {
 				console.log('wfy-system-parameter', parameter)
-				this.wmqsje = parseFloat(parameter.result.data[0].value)
+				this.wmqsje = parseInt(parameter.result.data[0].value)
 			})
 
 			/*

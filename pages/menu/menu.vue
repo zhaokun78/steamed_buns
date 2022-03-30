@@ -74,7 +74,7 @@
 											<text class="name">{{ good.name }}</text>
 											<!-- <text class="tips">{{good.goods_desc}}</text> -->
 											<view class="price_and_action">
-												<text class="price">￥{{ good.price }}</text>
+												<text class="price">￥{{ good.price/100 }}</text>
 												<view class="btn-group" v-if="good.use_property">
 													<button type="primary" class="btn property_btn" hover-class="none" size="mini"
 														@tap="showGoodDetailModal(good)">
@@ -114,7 +114,7 @@
 					<image src="/static/images/menu/cart.png" class="cart-img" @tap="openCartPopup"></image>
 					<view class="tag">{{ getCartGoodsNumber }}</view>
 				</view>
-				<view class="price">￥{{ getCartGoodsPrice }}</view>
+				<view class="price">￥{{ getCartGoodsPrice/100 }}</view>
 				<button type="primary" class="pay-btn" @tap="toPay" :disabled="disabledPay">
 					{{ disabledPay ? `差${spread}元起送` : '去结算' }}
 				</button>
@@ -162,7 +162,7 @@
 			</scroll-view>
 			<view class="action">
 				<view class="left">
-					<view class="price">￥{{ good.price }}</view>
+					<view class="price">￥{{ good.price/100 }}</view>
 					<view class="props" v-if="getGoodSelectedProps(good)">
 						{{ getGoodSelectedProps(good) }}
 					</view>
@@ -197,7 +197,7 @@
 								<view class="props">{{ item.props_text }}</view>
 							</view>
 							<view class="center">
-								<text>￥{{ item.price }}</text>
+								<text>￥{{ item.price/100 }}</text>
 							</view>
 							<view class="right">
 								<button type="default" plain size="mini" class="btn" hover-class="none" @tap="handleCartItemReduce(index)">
@@ -209,12 +209,12 @@
 								</button>
 							</view>
 						</view>
-						<view class="item" v-if="orderType == 'takeout' && store.packing_fee">
+						<view class="item" v-if="orderType == 'takeout'">
 							<view class="left">
 								<view class="name">包装费</view>
 							</view>
 							<view class="center">
-								<text>￥{{ parseFloat(store.packing_fee) }}</text>
+								<text>￥1</text>
 							</view>
 							<view class="right invisible">
 								<button type="default" plain size="mini" class="btn" hover-class="none">
@@ -252,6 +252,7 @@
 		},
 		data() {
 			return {
+				isFresh: false, //是否仅加载锁鲜产品
 				goods_categories: [], //商品分类
 				currentCateId: undefined, //当前选中商品分类
 				goods: [], //当前选中分类的所有商品
@@ -261,9 +262,14 @@
 				//cart: [], //购物车
 				goodDetailModalVisible: false, //是否显示商品详情模态框
 				good: {}, //当前商品
-				wmqsje: 0, //外卖起送金额
+				wmqsje: 0, //外卖起送金额(分)
 				cartPopupVisible: false,
 				sizeCalcState: false
+			}
+		},
+		onLoad(option) {
+			if (option.isFresh && option.isFresh == '1') {
+				this.isFresh = true
 			}
 		},
 		async onShow() {
@@ -339,13 +345,18 @@
 			//选择店铺的逻辑 end
 
 			//加载商品分类
-			const categories = await db.collection('wfy-goods-categories').where("name!='锁鲜'").orderBy('sort').get()
+			const categories = await db.collection('wfy-goods-categories')
+				.where(this.isFresh ? "name=='锁鲜'" : "name!='锁鲜'")
+				.orderBy('sort')
+				.get()
 			console.log('wfy-goods-categories', categories)
 			that.goods_categories = categories.result.data
 			that.currentCateId = that.goods_categories[0]._id
 
 			//加载所有商品
-			const tmpCate = await db.collection('wfy-goods-categories').where("name!='锁鲜'").getTemp()
+			const tmpCate = await db.collection('wfy-goods-categories')
+				.where(this.isFresh ? "name=='锁鲜'" : "name!='锁鲜'")
+				.getTemp()
 			const goods = await db.collection(tmpCate, 'wfy-goods').get()
 			console.log('wfy-goods', goods)
 			that.goods = goods.result.data
@@ -353,7 +364,7 @@
 			//加载系统参数
 			const parameter = await db.collection('wfy-system-parameter').where("name=='外卖起送金额'").limit(1).get()
 			console.log('wfy-system-parameter', parameter)
-			that.wmqsje = parseFloat(parameter.result.data[0].value)
+			that.wmqsje = parseInt(parameter.result.data[0].value)
 
 			uni.hideLoading()
 		},
@@ -380,14 +391,14 @@
 				return this.cart.reduce((acc, cur) => acc + cur.number, 0)
 			},
 			getCartGoodsPrice() { //计算购物车总价
-				return this.cart.reduce((acc, cur) => acc + cur.number * cur.price, 0).toFixed(2)
+				return this.cart.reduce((acc, cur) => acc + cur.number * cur.price, 0)
 			},
 			disabledPay() { //是否达到起送价
 				return this.orderType == 'takeout' && (this.getCartGoodsPrice < this.wmqsje) ? true : false
 			},
 			spread() { //差多少元起送
 				if (this.orderType != 'takeout') return
-				return parseFloat((this.wmqsje - this.getCartGoodsPrice).toFixed(2))
+				return (this.wmqsje - this.getCartGoodsPrice) / 100
 			}
 		},
 		methods: {
