@@ -314,8 +314,24 @@
 				"enablePullDownRefresh": false
 			}
 
+		}, {
+			"path": "pages/fresh-list/fresh-list",
+			"style": {
+				"navigationBarTitleText": "锁鲜产品",
+				"enablePullDownRefresh": false
+			}
+
 		}
-	],
+	    ,{
+            "path" : "pages/fresh-product/fresh-product",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-starter",

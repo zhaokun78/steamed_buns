@@ -18,7 +18,7 @@
 					<view class="title">给您送去</view>
 				</view>
 			</view>
-			<view class="info">
+			<view class="info" @tap="gotoFreshList">
 				<image class="logo-img" mode="widthFix" src="@/static/images/index/fresh.gif"></image>
 				<view class="integral_section">
 					<view class="top">
@@ -147,6 +147,11 @@
 			viewTuanCanPic() {
 				uni.navigateTo({
 					url: './tuancan/tuancan'
+				})
+			},
+			gotoFreshList() {
+				uni.navigateTo({
+					url: '/pages/fresh-list/fresh-list'
 				})
 			}
 		}
