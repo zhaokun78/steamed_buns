@@ -151,7 +151,7 @@
 			},
 			gotoFreshList() {
 				uni.navigateTo({
-					url: '/pages/fresh-list/fresh-list'
+					url: '/pages/menu/menu?isFresh=1'
 				})
 			}
 		}
