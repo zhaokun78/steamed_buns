@@ -72,7 +72,7 @@
 										<image :src="good.goods_thumb.path" class="image" @tap="showGoodDetailModal(good)"></image>
 										<view class="right">
 											<text class="name">{{ good.name }}</text>
-											<text class="tips">{{good.goods_desc}}</text>
+											<!-- <text class="tips">{{good.goods_desc}}</text> -->
 											<view class="price_and_action">
 												<text class="price">￥{{ good.price }}</text>
 												<view class="btn-group" v-if="good.use_property">
@@ -339,14 +339,14 @@
 			//选择店铺的逻辑 end
 
 			//加载商品分类
-			const categories = await db.collection('wfy-goods-categories').orderBy('sort').get()
+			const categories = await db.collection('wfy-goods-categories').where("name!='锁鲜'").orderBy('sort').get()
 			console.log('wfy-goods-categories', categories)
 			that.goods_categories = categories.result.data
 			that.currentCateId = that.goods_categories[0]._id
 
-			//加载当前选中分类的所有商品
-			// const tmp_goods = await db.collection('wfy-goods').where("category_id=='" + that.currentCateId + "'").getTemp()
-			const goods = await db.collection('wfy-goods-categories', 'wfy-goods').get()
+			//加载所有商品
+			const tmpCate = await db.collection('wfy-goods-categories').where("name!='锁鲜'").getTemp()
+			const goods = await db.collection(tmpCate, 'wfy-goods').get()
 			console.log('wfy-goods', goods)
 			that.goods = goods.result.data
 
