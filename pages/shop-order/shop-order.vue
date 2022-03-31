@@ -55,10 +55,6 @@
 			</view>
 			<template v-slot:footer>
 				<view class="footer-box">
-					<view @tap="printReceipt(order)">
-						<image src='/static/images/mine/jfqd.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
-						<text class="footer-box__item">打印小票</text>
-					</view>
 					<view @tap="closeOrder(order)">
 						<image src='/static/images/mine/shdz.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
 						<text class="footer-box__item">关闭订单</text>
