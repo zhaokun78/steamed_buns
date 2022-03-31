@@ -301,7 +301,7 @@
 								order_id: orderResult.result.id,
 								goods_id: this.cart[i]._id,
 								goods_name: this.cart[i].name,
-								price: this.cart[i].price * 100,
+								price: this.cart[i].price,
 								num: this.cart[i].number,
 							})
 							console.log('add wfy-order-goods', r)
