@@ -1,15 +1,11 @@
 <template>
   <view class="container">
-    <unicloud-db ref="udb" v-slot:default="{data, loading, error, options}" :options="options" collection="wfy-shop,opendb-city-china" field="create_time,type,name,owner_id,city_code{name as text},address,longitude,latitude,phone,business_hour_start,business_hour_end,business_state" :where="queryWhere" :getone="true" :manual="true">
+    <unicloud-db ref="udb" v-slot:default="{data, loading, error, options}" :options="options" collection="wfy-shop,opendb-city-china" field="type,name,city_code{name as text},address,longitude,latitude,phone,business_hour_start,business_hour_end,business_state,delivery_amount" :where="queryWhere" :getone="true" :manual="true">
       <view v-if="error">{{error.message}}</view>
       <view v-else-if="loading">
         <uni-load-more :contentText="loadMore" status="loading"></uni-load-more>
       </view>
       <view v-else-if="data">
-        <view>
-          <text>创建时间</text>
-          <uni-dateformat :threshold="[0, 0]" :date="data.create_time"></uni-dateformat>
-        </view>
         <view>
           <text>店铺类型</text>
           <text>{{options.type_valuetotext[data.type]}}</text>
@@ -17,10 +13,6 @@
         <view>
           <text>店铺名称</text>
           <text>{{data.name}}</text>
-        </view>
-        <view>
-          <text>店主id</text>
-          <text>{{data.owner_id}}</text>
         </view>
         <view>
           <text>所在城市</text>
@@ -53,6 +45,10 @@
         <view>
           <text>营业状态</text>
           <text>{{options.business_state_valuetotext[data.business_state]}}</text>
+        </view>
+        <view>
+          <text>外卖起送金额（分）</text>
+          <text>{{data.delivery_amount}}</text>
         </view>
       </view>
     </unicloud-db>

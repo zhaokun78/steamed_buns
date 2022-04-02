@@ -1,17 +1,11 @@
 <template>
   <view class="uni-container">
     <uni-forms ref="form" :value="formData" validate-trigger="submit" err-show-type="toast">
-      <uni-forms-item name="create_time" label="创建时间">
-        <uni-datetime-picker return-type="timestamp" v-model="formData.create_time"></uni-datetime-picker>
-      </uni-forms-item>
       <uni-forms-item name="type" label="店铺类型" required>
         <uni-data-checkbox v-model="formData.type" :localdata="formOptions.type_localdata"></uni-data-checkbox>
       </uni-forms-item>
       <uni-forms-item name="name" label="店铺名称" required>
         <uni-easyinput placeholder="店铺名称" v-model="formData.name"></uni-easyinput>
-      </uni-forms-item>
-      <uni-forms-item name="owner_id" label="店主id" required>
-        <uni-easyinput placeholder="店主id" v-model="formData.owner_id"></uni-easyinput>
       </uni-forms-item>
       <uni-forms-item name="city_code" label="所在城市" required>
         <uni-data-picker self-field="code" parent-field="parent_code" v-model="formData.city_code" collection="opendb-city-china" field="code as value, name as text, eq(type, 2) as isleaf" where="type!=2" orderby="value asc"></uni-data-picker>
@@ -36,6 +30,9 @@
       </uni-forms-item>
       <uni-forms-item name="business_state" label="营业状态" required>
         <uni-data-checkbox v-model="formData.business_state" :localdata="formOptions.business_state_localdata"></uni-data-checkbox>
+      </uni-forms-item>
+      <uni-forms-item name="delivery_amount" label="外卖起送金额（分）">
+        <uni-easyinput placeholder="外卖起送金额（分），0 代表取公共配置" type="number" v-model="formData.delivery_amount"></uni-easyinput>
       </uni-forms-item>
       <view class="uni-button-group">
         <button type="primary" class="uni-button" @click="submit">提交</button>
@@ -63,10 +60,8 @@
   export default {
     data() {
       let formData = {
-        "create_time": null,
         "type": null,
         "name": "",
-        "owner_id": "",
         "city_code": "",
         "address": "",
         "longitude": "",
@@ -74,7 +69,8 @@
         "phone": "",
         "business_hour_start": 6,
         "business_hour_end": 18,
-        "business_state": 0
+        "business_state": 0,
+        "delivery_amount": 0
       }
       return {
         formData,

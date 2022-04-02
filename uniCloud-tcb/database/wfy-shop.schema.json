@@ -116,6 +116,13 @@
 				"text": "打烊",
 				"value": 2
 			}]
+		},
+		"delivery_amount": {
+			"bsonType": "int",
+			"description": "外卖起送金额（分），0 代表取公共配置",
+			"label": "外卖起送金额（分）",
+			"minimum": 0,
+			"defaultValue": 0
 		}
 	}
 }

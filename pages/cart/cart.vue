@@ -102,12 +102,16 @@
 			}
 		},
 		onShow() {
-			//加载系统参数
-			const db = uniCloud.database()
-			db.collection('wfy-system-parameter').where("name=='外卖起送金额'").limit(1).get().then((parameter) => {
-				console.log('wfy-system-parameter', parameter)
-				this.wmqsje = parseInt(parameter.result.data[0].value)
-			})
+			if (this.store && this.store.delivery_amount && this.store.delivery_amount > 0) {
+				this.wmqsje = this.store.delivery_amount
+			} else {
+				//加载系统参数			
+				const db = uniCloud.database()
+				db.collection('wfy-system-parameter').where("name=='外卖起送金额'").limit(1).get().then((parameter) => {
+					console.log('wfy-system-parameter', parameter)
+					this.wmqsje = parseInt(parameter.result.data[0].value)
+				})
+			}
 
 			/*
 			console.log('cart onLoad')

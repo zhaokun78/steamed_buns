@@ -211,7 +211,7 @@
 						</view>
 						<view class="item" v-if="orderType == 'takeout'">
 							<view class="left">
-								<view class="name">包装费</view>
+								<view class="name">配送费</view>
 							</view>
 							<view class="center">
 								<text>￥1</text>
@@ -300,9 +300,9 @@
 					shops = res.result.data
 				}
 				if (shops.length == 0) {
-					this.goods_categories = []
-					this.currentCateI = undefined
-					this.goods = []
+					that.goods_categories = []
+					that.currentCateI = undefined
+					that.goods = []
 					uni.hideLoading()
 					return
 				}
@@ -346,7 +346,7 @@
 
 			//加载商品分类
 			const categories = await db.collection('wfy-goods-categories')
-				.where(this.isFresh ? "name=='锁鲜'" : "name!='锁鲜'")
+				.where(that.isFresh ? "name=='锁鲜'" : "name!='锁鲜'")
 				.orderBy('sort')
 				.get()
 			console.log('wfy-goods-categories', categories)
@@ -355,16 +355,20 @@
 
 			//加载所有商品
 			const tmpCate = await db.collection('wfy-goods-categories')
-				.where(this.isFresh ? "name=='锁鲜'" : "name!='锁鲜'")
+				.where(that.isFresh ? "name=='锁鲜'" : "name!='锁鲜'")
 				.getTemp()
 			const goods = await db.collection(tmpCate, 'wfy-goods').get()
 			console.log('wfy-goods', goods)
 			that.goods = goods.result.data
 
 			//加载系统参数
-			const parameter = await db.collection('wfy-system-parameter').where("name=='外卖起送金额'").limit(1).get()
-			console.log('wfy-system-parameter', parameter)
-			that.wmqsje = parseInt(parameter.result.data[0].value)
+			if (that.store.delivery_amount && that.store.delivery_amount > 0) {
+				that.wmqsje = that.store.delivery_amount
+			} else {
+				const parameter = await db.collection('wfy-system-parameter').where("name=='外卖起送金额'").limit(1).get()
+				console.log('wfy-system-parameter', parameter)
+				that.wmqsje = parseInt(parameter.result.data[0].value)
+			}
 
 			uni.hideLoading()
 		},

@@ -2,14 +2,6 @@
 
 
 const validator = {
-  "create_time": {
-    "rules": [
-      {
-        "format": "timestamp"
-      }
-    ],
-    "label": "创建时间"
-  },
   "type": {
     "rules": [
       {
@@ -43,17 +35,6 @@ const validator = {
       }
     ],
     "label": "店铺名称"
-  },
-  "owner_id": {
-    "rules": [
-      {
-        "required": true
-      },
-      {
-        "format": "string"
-      }
-    ],
-    "label": "店主id"
   },
   "city_code": {
     "rules": [
@@ -168,6 +149,18 @@ const validator = {
       }
     ],
     "label": "营业状态",
+    "defaultValue": 0
+  },
+  "delivery_amount": {
+    "rules": [
+      {
+        "format": "int"
+      },
+      {
+        "minimum": 0
+      }
+    ],
+    "label": "外卖起送金额（分）",
     "defaultValue": 0
   }
 }
