@@ -1,0 +1,40 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"description": "只要表中存在的记录，就代表店铺对应商品已下架",
+	"required": [],
+	"permission": {
+		"read": "doc.creater == auth.uid",
+		"create": true,
+		"update": false,
+		"delete": "doc.creater == auth.uid"
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"creater": {
+			"bsonType": "string",
+			"description": "创建人ID",
+			"forceDefaultValue": {
+				"$env": "uid"
+			}
+		},
+		"create_time": {
+			"bsonType": "timestamp",
+			"description": "创建时间",
+			"label": "创建时间",
+			"forceDefaultValue": {
+				"$env": "now"
+			}
+		},
+		"shop_id": {
+			"bsonType": "string",
+			"description": "店铺ID"
+		},
+		"goods_id": {
+			"bsonType": "string",
+			"description": "商品ID"
+		}
+	}
+}

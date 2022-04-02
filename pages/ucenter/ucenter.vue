@@ -17,10 +17,10 @@
 			<uni-list-item v-if="myShop" title="店铺订单" link="navigateTo" clickable="true" @click="gotoShopOrder" show-extra-icon="true"
 				:extraIcon="{type:'compose',color:'#999'}">
 			</uni-list-item>
-			<uni-list-item v-if="myShop" title="店铺商品" link="navigateTo" clickable="true" @click="" show-extra-icon="true"
+			<uni-list-item v-if="myShop" title="店铺商品" link="navigateTo" clickable="true" @click="gotoShopGoods" show-extra-icon="true"
 				:extraIcon="{type:'compose',color:'#999'}">
 			</uni-list-item>
-			<uni-list-item v-if="myShop" title="店铺流水" link="navigateTo" clickable="true" @click="gotoShopOrder" show-extra-icon="true"
+			<uni-list-item v-if="myShop" title="店铺流水" link="navigateTo" clickable="true" @click="" show-extra-icon="true"
 				:extraIcon="{type:'compose',color:'#999'}">
 			</uni-list-item>
 			<uni-list-item v-for="(item,i) in sublist" :title="item.title" link="navigateTo" :rightText="item.rightText" :key="i" :clickable="true"
@@ -111,6 +111,11 @@
 			gotoShopOrder() {
 				uni.navigateTo({
 					url: '/pages/shop-order/shop-order'
+				})
+			},
+			gotoShopGoods() {
+				uni.navigateTo({
+					url: '/pages/shop-goods/shop-goods'
 				})
 			},
 			/**
