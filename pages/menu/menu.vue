@@ -299,6 +299,8 @@
 				if (res.result.code == 0) {
 					shops = res.result.data
 				}
+
+				//当前城市没有店铺
 				if (shops.length == 0) {
 					that.goods_categories = []
 					that.currentCateI = undefined
