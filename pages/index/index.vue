@@ -69,11 +69,6 @@
 		mapGetters
 	} from 'vuex';
 
-	import Gps from '@/uni_modules/json-gps/js_sdk/gps.js';
-	const gps = new Gps()
-
-	import util from '@/common/util'
-
 	export default {
 		data() {
 			return {
@@ -98,34 +93,7 @@
 				}
 			})
 		},
-		onShow() {
-			this.getLocation()
-		},
 		methods: {
-			async getLocation() {
-				//获取用户当前定位
-				let location = await gps.getLocation({
-					geocode: true
-				})
-				console.log('location', location)
-				if (location) {
-					uni.showLoading({
-						title: "获取定位中"
-					})
-
-					//根据坐标逆向位置信息
-					let res = await util.reverseGeocoder(location)
-					console.log('reverseGeocoder', res)
-					uni.setStorage({
-						key: 'my_location',
-						data: res,
-						success: function() {
-							console.log('set my_location success')
-						},
-					})
-					uni.hideLoading()
-				}
-			},
 			takein() {
 				if (this.orderType != 'takein') {
 					this.$store.commit('CLEAR_CART', undefined)

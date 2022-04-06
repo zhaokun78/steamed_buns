@@ -55,7 +55,7 @@ class Gps {
 					}
 					if (err.errMsg == 'getLocation:fail:ERROR_NOCELL&WIFI_LOCATIONSWITCHOFF') {
 						uni.showModal({
-							content: '未开启定位权限，请前往手机系统设置中开启',
+							content: '未开启定位，请开启手机定位后重试！',
 							showCancel: false,
 							confirmText: "知道了"
 						});

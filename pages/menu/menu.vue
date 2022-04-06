@@ -244,6 +244,7 @@
 		mapGetters
 	} from 'vuex'
 	import util from '@/common/util'
+	import Gps from '@/uni_modules/json-gps/js_sdk/gps.js';
 
 	export default {
 		components: {
@@ -273,106 +274,119 @@
 			}
 		},
 		async onShow() {
-			uni.showLoading({
-				title: '加载中...'
+			//获取用户当前定位
+			const gps = new Gps()
+			let location = await gps.getLocation({
+				geocode: true
 			})
-
-			let that = this
-			const db = uniCloud.database()
-
-			//选择店铺的逻辑 start
-			if ((that.orderType == 'takein' && that.store == undefined) || (that.orderType == 'takeout')) {
-				let city_code = undefined
-				if (that.orderType == 'takein') {
-					//自提方式：从 storage 中加载当前用户的定位信息
-					const my_location = uni.getStorageSync('my_location')
-					city_code = my_location.ad_info.city_code
-				} else {
-					//外卖方式：充用户选择的地址中获取区域编码
-					city_code = '156' + that.address.city_code
-				}
-
-				//加载用户当前所在城市所有店铺
-				let res = await db.collection("wfy-shop").where("concat('156',city_code)== '" + city_code + "' ").get()
-				console.log('wfy-shop', res)
-				let shops = []
-				if (res.result.code == 0) {
-					shops = res.result.data
-				}
-
-				//当前城市没有店铺
-				if (shops.length == 0) {
-					that.goods_categories = []
-					that.currentCateI = undefined
-					that.goods = []
-					uni.hideLoading()
-					return
-				}
-
-				//处理店铺营业状态
-				util.processShopBusinessState(shops)
-
-				//批量计算距离
-				let targetArray = []
-				for (let i = 0; i < shops.length; i++) {
-					targetArray.push({
-						'latitude': shops[i].latitude,
-						'longitude': shops[i].longitude
-					})
-				}
-				res = await util.calculateDistance(targetArray)
-				console.log('calculateDistance', res)
-				for (let i = 0; i < res.length; i++) {
-					shops[i].distance = res[i].distance
-				}
-
-				//按距离从近到远排序
-				const sortedShops = shops.sort(function(a, b) {
-					return a.distance - b.distance
+			console.log('location', location)
+			if (location) {
+				uni.showLoading({
+					title: '加载中...'
 				})
 
-				//选中第一个营业状态的店铺
-				for (let i = 0; i < sortedShops.length; i++) {
-					if (sortedShops[i].state == '营业') {
-						that.SET_STORE(sortedShops[i])
-						break
+				//根据坐标逆向位置信息
+				let res = await util.reverseGeocoder(location)
+				console.log('reverseGeocoder', res)
+				uni.setStorageSync('my_location', res)
+
+				let that = this
+				const db = uniCloud.database()
+
+				//选择店铺的逻辑 start
+				if ((that.orderType == 'takein' && that.store == undefined) || (that.orderType == 'takeout')) {
+					let city_code = undefined
+					if (that.orderType == 'takein') {
+						//自提方式：从 storage 中加载当前用户的定位信息
+						const my_location = uni.getStorageSync('my_location')
+						city_code = my_location.ad_info.city_code
+					} else {
+						//外卖方式：充用户选择的地址中获取区域编码
+						city_code = '156' + that.address.city_code
+					}
+
+					//加载用户当前所在城市所有店铺
+					res = await db.collection("wfy-shop").where("concat('156',city_code)== '" + city_code + "' ").get()
+					console.log('wfy-shop', res)
+					let shops = []
+					if (res.result.code == 0) {
+						shops = res.result.data
+					}
+
+					//当前城市没有店铺
+					if (shops.length == 0) {
+						that.goods_categories = []
+						that.currentCateI = undefined
+						that.goods = []
+						uni.hideLoading()
+						return
+					}
+
+					//处理店铺营业状态
+					util.processShopBusinessState(shops)
+
+					//批量计算距离
+					let targetArray = []
+					for (let i = 0; i < shops.length; i++) {
+						targetArray.push({
+							'latitude': shops[i].latitude,
+							'longitude': shops[i].longitude
+						})
+					}
+					res = await util.calculateDistance(targetArray)
+					console.log('calculateDistance', res)
+					for (let i = 0; i < res.length; i++) {
+						shops[i].distance = res[i].distance
+					}
+
+					//按距离从近到远排序
+					const sortedShops = shops.sort(function(a, b) {
+						return a.distance - b.distance
+					})
+
+					//选中第一个营业状态的店铺
+					for (let i = 0; i < sortedShops.length; i++) {
+						if (sortedShops[i].state == '营业') {
+							that.SET_STORE(sortedShops[i])
+							break
+						}
+					}
+
+					//如果全部都打烊了，就只能设置第一个店铺了
+					if (that.store == undefined) {
+						that.SET_STORE(sortedShops[0])
 					}
 				}
+				//选择店铺的逻辑 end
 
-				//如果全部都打烊了，就只能设置第一个店铺了
-				if (that.store == undefined) {
-					that.SET_STORE(sortedShops[0])
+				//加载商品分类
+				const categories = await db.collection('wfy-goods-categories')
+					.where(that.isFresh ? "name=='锁鲜'" : "name!='锁鲜'")
+					.orderBy('sort')
+					.get()
+				console.log('wfy-goods-categories', categories)
+				that.goods_categories = categories.result.data
+				that.currentCateId = that.goods_categories[0]._id
+
+				//加载所有商品
+				const tmpCate = await db.collection('wfy-goods-categories')
+					.where(that.isFresh ? "name=='锁鲜'" : "name!='锁鲜'")
+					.getTemp()
+				const goods = await db.collection(tmpCate, 'wfy-goods').get()
+				console.log('wfy-goods', goods)
+				that.goods = goods.result.data
+
+				//加载系统参数
+				if (that.store.delivery_amount && that.store.delivery_amount > 0) {
+					that.wmqsje = that.store.delivery_amount
+				} else {
+					const parameter = await db.collection('wfy-system-parameter').where("name=='外卖起送金额'").limit(1).get()
+					console.log('wfy-system-parameter', parameter)
+					that.wmqsje = parseInt(parameter.result.data[0].value)
 				}
+
+				uni.hideLoading()
 			}
-			//选择店铺的逻辑 end
-
-			//加载商品分类
-			const categories = await db.collection('wfy-goods-categories')
-				.where(that.isFresh ? "name=='锁鲜'" : "name!='锁鲜'")
-				.orderBy('sort')
-				.get()
-			console.log('wfy-goods-categories', categories)
-			that.goods_categories = categories.result.data
-			that.currentCateId = that.goods_categories[0]._id
-
-			//加载所有商品
-			const tmpCate = await db.collection('wfy-goods-categories')
-				.where(that.isFresh ? "name=='锁鲜'" : "name!='锁鲜'")
-				.getTemp()
-			const goods = await db.collection(tmpCate, 'wfy-goods').get()
-			console.log('wfy-goods', goods)
-			that.goods = goods.result.data
-
-			//加载系统参数
-			if (that.store.delivery_amount && that.store.delivery_amount > 0) {
-				that.wmqsje = that.store.delivery_amount
-			} else {
-				const parameter = await db.collection('wfy-system-parameter').where("name=='外卖起送金额'").limit(1).get()
-				console.log('wfy-system-parameter', parameter)
-				that.wmqsje = parseInt(parameter.result.data[0].value)
-			}
-
-			uni.hideLoading()
 		},
 		computed: {
 			...mapState(['orderType', 'address', 'store', 'cart']),
