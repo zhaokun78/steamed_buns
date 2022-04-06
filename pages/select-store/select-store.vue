@@ -75,30 +75,32 @@
 				//加载用户当前所在城市所有店铺
 				db.collection("wfy-shop").where("concat('156',city_code)== '" + my_location.ad_info.city_code + "' ").get().then((r) => {
 					console.log('wfy-shop', r)
+					this.shopDistanceCalc(r.result.data)
+				})
+			},
+			shopDistanceCalc(shops) {
+				//处理店铺营业状态
+				util.processShopBusinessState(shops)
 
-					//处理店铺营业状态
-					util.processShopBusinessState(r.result.data)
+				//店铺经纬度数组，用于批量计算距离
+				let targetArray = []
+				for (let i = 0; i < shops.length; i++) {
+					targetArray.push({
+						'latitude': shops[i].latitude,
+						'longitude': shops[i].longitude
+					})
+				}
 
-					//店铺经纬度数组，用于批量计算距离
-					let targetArray = []
-					for (let i = 0; i < r.result.data.length; i++) {
-						targetArray.push({
-							'latitude': r.result.data[i].latitude,
-							'longitude': r.result.data[i].longitude
-						})
+				//批量计算距离
+				let that = this
+				util.calculateDistance(targetArray).then((res) => {
+					console.log('calculateDistance', res)
+					for (let i = 0; i < res.length; i++) {
+						shops[i].distance = res[i].distance
 					}
 
-					//批量计算距离
-					let that = this
-					util.calculateDistance(targetArray).then((res) => {
-						console.log('calculateDistance', res)
-						for (let i = 0; i < res.length; i++) {
-							r.result.data[i].distance = res[i].distance
-						}
-
-						that.stores = r.result.data.sort(function(a, b) {
-							return a.distance - b.distance
-						})
+					that.stores = shops.sort(function(a, b) {
+						return a.distance - b.distance
 					})
 				})
 			},
@@ -140,11 +142,15 @@
 					txt = e
 				}
 
+				/*
 				const db = uniCloud.database()
 				db.collection('wfy-shop').where("/" + txt + "/.test(name) || /" + txt + "/.test(address)").get().then((r) => {
 					console.log('searchStore', r)
-					this.stores = r.result.data
+					this.shopDistanceCalc(r.result.data)
 				})
+				*/
+
+				this.stores = this.stores.filter(s => s.name.indexOf(txt) > -1)
 			},
 			clearSearchStore(e) {
 				console.log('clearSearchStore', e)
