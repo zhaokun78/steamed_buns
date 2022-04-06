@@ -3,8 +3,8 @@
 	"permission": {
 		"create": true,
 		"delete": false,
-		"read": "doc.user_id == auth.uid",
-		"update": "doc.user_id == auth.uid"
+		"read": true,
+		"update": true
 	},
 	"properties": {
 		"_id": {
