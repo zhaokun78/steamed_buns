@@ -376,6 +376,27 @@
 				console.log('wfy-goods', goods)
 				that.goods = goods.result.data
 
+				//加载当前店铺下架商品
+				let shopGoods = await db.collection('wfy-shop-goods').where("shop_id=='" + this.store._id + "'").get()
+				console.log('wfy-shop-goods', shopGoods)
+				if (shopGoods.result.code == 0) {
+					for (let i = 0; i < shopGoods.result.data.length; i++) {
+						let isContinue = true
+						for (let j = 0; j < that.goods.length; j++) {
+							if (isContinue) {
+								for (let k = 0; k < that.goods[i]._id['wfy-goods'].length; k++) {
+									const index = that.goods[i]._id['wfy-goods'].findIndex(item => item._id == shopGoods.result.data[i].goods_id)
+									if (index > -1) {
+										that.goods[i]._id['wfy-goods'].splice(index, 1)
+										isContinue = false
+										break
+									}
+								}
+							}
+						}
+					}
+				}
+
 				//加载系统参数
 				if (that.store.delivery_amount && that.store.delivery_amount > 0) {
 					that.wmqsje = that.store.delivery_amount
