@@ -83,7 +83,9 @@
 				const db = uniCloud.database()
 
 				//本人的所有已付款、备餐中、待取餐/配送中订单
-				let order = await db.collection('uni-id-base-order').where('user_id==$cloudEnv_uid && (status==2 || status==3 || status==4)')
+				let order = await db.collection('uni-id-base-order')
+					.where('user_id==$cloudEnv_uid && (status==2 || status==3 || status==4)')
+					.orderBy('create_time', 'desc')
 					.getTemp()
 				let res = await db.collection(order, 'wfy-shop').get()
 				console.log('uni-id-base-order', res)
@@ -91,7 +93,11 @@
 					this.currentOrders = res.result.data
 				}
 
-				order = await db.collection('uni-id-base-order').where('user_id==$cloudEnv_uid && status==5').getTemp()
+				//本人的所有已关闭订单
+				order = await db.collection('uni-id-base-order')
+					.where('user_id==$cloudEnv_uid && status==5')
+					.orderBy('create_time', 'desc')
+					.getTemp()
 				res = await db.collection(order, 'wfy-shop').get()
 				console.log('uni-id-base-order', res)
 				if (res.result.code == 0) {
