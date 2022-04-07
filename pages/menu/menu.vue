@@ -384,10 +384,10 @@
 						let isContinue = true
 						for (let j = 0; j < that.goods.length; j++) {
 							if (isContinue) {
-								for (let k = 0; k < that.goods[i]._id['wfy-goods'].length; k++) {
-									const index = that.goods[i]._id['wfy-goods'].findIndex(item => item._id == shopGoods.result.data[i].goods_id)
+								for (let k = 0; k < that.goods[j]._id['wfy-goods'].length; k++) {
+									const index = that.goods[j]._id['wfy-goods'].findIndex(item => item._id == shopGoods.result.data[i].goods_id)
 									if (index > -1) {
-										that.goods[i]._id['wfy-goods'].splice(index, 1)
+										that.goods[j]._id['wfy-goods'].splice(index, 1)
 										isContinue = false
 										break
 									}
