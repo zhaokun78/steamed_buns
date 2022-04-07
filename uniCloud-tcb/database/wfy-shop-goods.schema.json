@@ -4,7 +4,7 @@
 	"description": "只要表中存在的记录，就代表店铺对应商品已下架",
 	"required": [],
 	"permission": {
-		"read": "doc.creater == auth.uid",
+		"read": true,
 		"create": true,
 		"update": false,
 		"delete": "doc.creater == auth.uid"
