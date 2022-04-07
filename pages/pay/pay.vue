@@ -169,6 +169,7 @@
 	} from 'vuex'
 	import listCell from '@/components/list-cell/list-cell'
 	import modal from '@/components/modal/modal'
+	import util from '@/common/util'
 
 	export default {
 		components: {
@@ -279,6 +280,14 @@
 						})
 						console.log('pickupNumber', pickupNumberRes)
 						pickupNumber = pickupNumberRes.result.data[0].pickup_number
+						if (pickupNumber < 10) {
+							pickupNumber = "000" + pickupNumber
+						} else if (pickupNumber < 100) {
+							pickupNumber = "00" + pickupNumber
+						} else if (pickupNumber < 1000) {
+							pickupNumber = "0" + pickupNumber
+						}
+						pickupNumber = util.randomLetter() + pickupNumber
 					}
 
 					//创建订单记录

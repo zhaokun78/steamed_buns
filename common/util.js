@@ -170,6 +170,19 @@ const util = {
 				shops[i].state = '打烊'
 			}
 		}
+	},
+	//随机取26个字母中的一个
+	randomLetter() {
+		//创建26个字母数组
+		const arr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
+			'Z'
+		];
+		let idvalue = ''
+		let n = 1; //这个值可以改变的，对应的生成多少个字母，根据自己需求所改
+		for (let i = 0; i < n; i++) {
+			idvalue += arr[Math.floor(Math.random() * 26)]
+		}
+		return idvalue
 	}
 }
 
