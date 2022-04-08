@@ -125,8 +125,7 @@
 		"pay_type": {
 			"bsonType": "string",
 			"description": "支付渠道，wxpay | alipay",
-			"label": "支付渠道",
-			"forceDefaultValue": "wxpay"
+			"label": "支付渠道"
 		},
 		"transaction_id": {
 			"bsonType": "string",

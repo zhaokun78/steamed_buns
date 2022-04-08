@@ -266,104 +266,147 @@
 					title: '请稍等'
 				})
 
-				let that = this
 				const db = uniCloud.database()
-				try {
-					let pickupNumber = null
-					if (this.orderType == 'takein') {
-						//调用云函数生成取餐号
-						let pickupNumberRes = await uniCloud.callFunction({
-							name: 'wfy-generate-pickup-number',
-							data: {
-								shop_id: this.store._id
-							}
-						})
-						console.log('pickupNumber', pickupNumberRes)
-						pickupNumber = pickupNumberRes.result.data[0].pickup_number
-						if (pickupNumber < 10) {
-							pickupNumber = "000" + pickupNumber
-						} else if (pickupNumber < 100) {
-							pickupNumber = "00" + pickupNumber
-						} else if (pickupNumber < 1000) {
-							pickupNumber = "0" + pickupNumber
+				let pickupNumber = null
+				if (this.orderType == 'takein') {
+					//调用云函数生成取餐号
+					let pickupNumberRes = await uniCloud.callFunction({
+						name: 'wfy-generate-pickup-number',
+						data: {
+							shop_id: this.store._id
 						}
-						pickupNumber = util.randomLetter() + pickupNumber
+					})
+					console.log('pickupNumber', pickupNumberRes)
+					pickupNumber = pickupNumberRes.result.data[0].pickup_number
+					if (pickupNumber < 10) {
+						pickupNumber = "000" + pickupNumber
+					} else if (pickupNumber < 100) {
+						pickupNumber = "00" + pickupNumber
+					} else if (pickupNumber < 1000) {
+						pickupNumber = "0" + pickupNumber
 					}
-
-					//创建订单记录
-					let orderResult = await db.collection('uni-id-base-order').add({
-						paid_time: new Date().getTime(),
-						user_mobile: this.form.mobile,
-						pick_up_number: pickupNumber,
-						status: 2,
-						type: this.orderType == 'takein' ? 0 : 1,
-						store: this.store._id,
-						total_fee: this.cart.reduce((acc, cur) => acc + cur.number * cur.price, 0),
-						is_refund: false,
-					})
-					console.log('add uni-id-base-order', orderResult)
-
-					if (orderResult.result.code == 0) {
-						//创建 订单---商品 子记录
-						for (let i = 0; i < this.cart.length; i++) {
-							let r = await db.collection('wfy-order-goods').add({
-								order_id: orderResult.result.id,
-								goods_id: this.cart[i]._id,
-								goods_name: this.cart[i].name,
-								price: this.cart[i].price,
-								num: this.cart[i].number,
-							})
-							console.log('add wfy-order-goods', r)
-
-							if (r.result.code != 0) {
-								uni.hideLoading()
-								uni.showModal({
-									showCancel: false,
-									title: '创建订单失败',
-									content: r.result.message
-								})
-								return
-							}
-						}
-					} else {
-						uni.hideLoading()
-						uni.showModal({
-							showCancel: false,
-							title: '创建订单失败',
-							content: orderResult.result.message
-						})
-						return
-					}
-
-					uni.hideLoading()
-					uni.showModal({
-						showCancel: false,
-						title: '提示',
-						content: '订单创建成功！',
-						success: function(res) {
-							if (res.confirm) {
-								that.CLEAR_CART()
-								uni.switchTab({
-									url: '/pages/take-foods/take-foods'
-								})
-							}
-						}
-					})
-				} catch (e) {
-					console.log(e)
-
-					uni.hideLoading()
-					uni.showModal({
-						showCancel: false,
-						title: '发生错误',
-						content: JSON.stringify(e)
-					})
+					pickupNumber = util.randomLetter() + pickupNumber
 				}
 
-				//微信支付
+				//创建订单记录
+				let orderResult = await db.collection('uni-id-base-order').add({
+					user_mobile: this.form.mobile,
+					pick_up_number: pickupNumber,
+					status: 1,
+					type: this.orderType == 'takein' ? 0 : 1,
+					store: this.store._id,
+					total_fee: this.cart.reduce((acc, cur) => acc + cur.number * cur.price, 0),
+					is_refund: false,
+				})
+				console.log('add uni-id-base-order', orderResult)
 
-				//支付回调
-				//设置 paid_time 字段
+				if (orderResult.result.code == 0) {
+					//创建 订单---商品 子记录
+					for (let i = 0; i < this.cart.length; i++) {
+						let r = await db.collection('wfy-order-goods').add({
+							order_id: orderResult.result.id,
+							goods_id: this.cart[i]._id,
+							goods_name: this.cart[i].name,
+							price: this.cart[i].price,
+							num: this.cart[i].number,
+						})
+						console.log('add wfy-order-goods', r)
+
+						if (r.result.code != 0) {
+							uni.hideLoading()
+							uni.showModal({
+								showCancel: false,
+								title: '创建订单失败',
+								content: r.result.message
+							})
+							return
+						}
+					}
+				} else {
+					uni.hideLoading()
+					uni.showModal({
+						showCancel: false,
+						title: '创建订单失败',
+						content: orderResult.result.message
+					})
+					return
+				}
+
+				//调用 pay 云函数获取支付参数
+				let payRes = await uniCloud.callFunction({
+					name: 'pay',
+					data: {
+						provider: 'wxpay',
+						outTradeNo: orderResult.result.id
+					}
+				})
+				console.log(payRes)
+
+				uni.hideLoading()
+
+				if (payRes.result.orderInfo) {
+					let that = this
+
+					//调起支付
+					uni.requestPayment({
+						...payRes.result.orderInfo,
+						success: function(s) {
+							console.log('requestPayment success', s)
+
+							uni.showModal({
+								showCancel: false,
+								content: '订单支付成功',
+								success: function(r) {
+									if (r.confirm) {
+										//查询订单状态
+										db.collection('uni-id-base-order')
+											.where("_id == '" + orderResult.result.id + "'")
+											.limit(1)
+											.get()
+											.then((order) => {
+												console.log('uni-id-base-order', order)
+												if (order.result.code == 0 &&
+													order.result.data.length > 0 &&
+													order.result.data[0].status == 2) {
+													that.CLEAR_CART()
+													uni.switchTab({
+														url: '/pages/take-foods/take-foods'
+													})
+												} else {
+													uni.showModal({
+														content: '订单状态未更新完成，请稍后查询',
+														showCancel: false,
+														success: function(r1) {
+															if (r1.confirm) {
+																that.CLEAR_CART()
+																uni.switchTab({
+																	url: '/pages/take-foods/take-foods'
+																})
+															}
+														}
+													})
+												}
+											})
+									}
+								}
+							})
+						},
+						fail: function(e) {
+							console.log('requestPayment fail', e)
+							uni.showModal({
+								showCancel: false,
+								title: '支付失败',
+								content: e.errMsg
+							})
+						}
+					})
+				} else {
+					uni.showModal({
+						showCancel: false,
+						title: '获取支付参数出错',
+						content: payRes.result.msg
+					})
+				}
 			}
 		}
 	}
