@@ -123,6 +123,11 @@
 			"label": "外卖起送金额（分）",
 			"minimum": 0,
 			"defaultValue": 0
+		},
+		"printer_sn": {
+			"bsonType": "string",
+			"description": "打印机SN",
+			"label": "打印机SN"
 		}
 	}
 }
