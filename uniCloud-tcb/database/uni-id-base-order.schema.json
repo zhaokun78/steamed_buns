@@ -12,11 +12,41 @@
 		},
 		"create_time": {
 			"bsonType": "timestamp",
-			"description": "订单创建时间/发起退款时间",
-			"label": "订单创建时间/发起退款时间",
+			"description": "订单创建时间",
+			"label": "订单创建时间",
 			"forceDefaultValue": {
 				"$env": "now"
 			}
+		},
+		"paid_time": {
+			"bsonType": "timestamp",
+			"description": "订单付款时间",
+			"label": "付款时间"
+		},
+		"accept_time": {
+			"bsonType": "timestamp",
+			"description": "订单接单时间",
+			"label": "接单时间"
+		},
+		"close_time": {
+			"bsonType": "timestamp",
+			"description": "订单关闭时间",
+			"label": "关闭时间"
+		},
+		"refund_apply_time": {
+			"bsonType": "timestamp",
+			"description": "退款申请时间",
+			"label": "退款申请时间"
+		},
+		"refund_deny_time": {
+			"bsonType": "timestamp",
+			"description": "退款拒绝/失败时间",
+			"label": "退款拒绝/失败时间"
+		},
+		"refund_time": {
+			"bsonType": "timestamp",
+			"description": "订单完成退款时间",
+			"label": "完成退款时间"
 		},
 		"pick_up_number": {
 			"bsonType": "string",
@@ -107,21 +137,6 @@
 			"description": "订单总金额，单位：分。",
 			"label": "订单总金额（分）"
 		},
-		"paid_time": {
-			"bsonType": "timestamp",
-			"description": "订单付款时间",
-			"label": "付款时间"
-		},
-		"accept_time": {
-			"bsonType": "timestamp",
-			"description": "订单接单时间",
-			"label": "接单时间"
-		},
-		"close_time": {
-			"bsonType": "timestamp",
-			"description": "订单关闭时间",
-			"label": "关闭时间"
-		},
 		"pay_type": {
 			"bsonType": "string",
 			"description": "支付渠道，wxpay | alipay",
@@ -131,11 +146,6 @@
 			"bsonType": "string",
 			"description": "微信或支付宝交易单号",
 			"label": "交易单号"
-		},
-		"update_time": {
-			"bsonType": "timestamp",
-			"description": "订单更新时间",
-			"label": "订单更新时间"
 		},
 		"platform": {
 			"bsonType": "string",
@@ -157,11 +167,6 @@
 			"bsonType": "string",
 			"description": "退款原因",
 			"label": "退款原因"
-		},
-		"refund_time": {
-			"bsonType": "timestamp",
-			"description": "订单完成退款时间",
-			"label": "完成退款时间"
 		}
 	},
 	"required": []
