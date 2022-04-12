@@ -64,6 +64,18 @@
 								<view>付款时间</view>
 								<view class="font-weight-bold">{{ formatDateTime(order.paid_time) }}</view>
 							</view>
+							<view class="pay-cell" v-if="order.refund_apply_time">
+								<view>退款申请时间</view>
+								<view class="font-weight-bold">{{ formatDateTime(order.refund_apply_time) }}</view>
+							</view>
+							<view class="pay-cell" v-if="order.refund_deny_time">
+								<view>退款拒绝/失败时间</view>
+								<view class="font-weight-bold">{{ formatDateTime(order.refund_deny_time) }}</view>
+							</view>
+							<view class="pay-cell" v-if="order.refund_time">
+								<view>退款完成时间</view>
+								<view class="font-weight-bold">{{ formatDateTime(order.refund_time) }}</view>
+							</view>
 							<view class="pay-cell" v-if="order.accept_time">
 								<view>接单时间</view>
 								<view class="font-weight-bold">{{ formatDateTime(order.accept_time) }}</view>
@@ -95,6 +107,15 @@
 							<view>联系电话</view>
 							<view class="font-weight-bold">{{order.user_mobile}}</view>
 						</view>
+						<view class="pay-cell" v-if="order.status==2">
+							<button type="default" size="mini" @click="open">退款</button>
+						</view>
+						<uni-popup ref="popup" type="dialog">
+							<uni-popup-dialog mode="base" title="退款原因" :duration="2000" :before-close="true" @close="close" @confirm="confirm">
+								<uni-combox :candidates="refundReasons" placeholder="请选择或输入退款原因" v-model="reasonsTxt">
+								</uni-combox>
+							</uni-popup-dialog>
+						</uni-popup>
 					</view>
 				</list-cell>
 				<!-- order other info end -->
@@ -114,6 +135,8 @@
 			return {
 				order: undefined, //订单
 				goods: [], //订单中的商品
+				refundReasons: ["不想要了", "无货"],
+				reasonsTxt: ''
 			}
 		},
 		async onLoad(option) {
@@ -140,6 +163,66 @@
 			},
 			formatOrderState(order) {
 				return util.formatOrderState(order)
+			},
+			open() {
+				this.$refs.popup.open()
+			},
+			close() {
+				console.log('on close')
+				this.$refs.popup.close()
+				this.reasonsTxt = ''
+			},
+			async confirm() {
+				console.log('on confirm')
+				this.$refs.popup.close()
+
+				this.reasonsTxt = this.reasonsTxt.trim()
+				if (this.reasonsTxt == '') {
+					return
+				}
+
+				const db = uniCloud.database()
+
+				//查询订单最新状态
+				let order = await db.collection('uni-id-base-order').where("_id == '" + this.order._id + "'").limit(1).get()
+				console.log('uni-id-base-order', order)
+				if (order.result.code != 0) {
+					return
+				}
+
+				if (order.result.data[0].status != 2) {
+					uni.showModal({
+						showCancel: false,
+						content: '订单状态已改变，退款失败！',
+						success: function(r) {
+							if (r.confirm) {
+								uni.switchTab({
+									url: '/pages/index/index'
+								})
+							}
+						}
+					})
+				} else {
+					//修改订单
+					let updateRes = await db.collection('uni-id-base-order').doc(this.order._id).update({
+						status: 6,
+						is_refund: true,
+						refund_apply_time: new Date().getTime(),
+						refund_desc: this.reasonsTxt
+					})
+					console.log('update uni-id-base-order', updateRes)
+					uni.showModal({
+						showCancel: false,
+						content: '退款申请已提交，请等待审批',
+						success: function(r) {
+							if (r.confirm) {
+								uni.switchTab({
+									url: '/pages/index/index'
+								})
+							}
+						}
+					})
+				}
 			}
 		}
 	}
