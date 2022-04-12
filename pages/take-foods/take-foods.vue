@@ -64,6 +64,32 @@
 				</template>
 			</uni-card>
 		</block>
+		<block v-if="curTabIndex==2">
+			<uni-card v-for="(order,index) in refundOrders" :key="order._id" mode="title" :title="order.store[0].name"
+				:subTitle="order.type == 0 ? '自提' : '外卖'" :extra="'合计：￥'+ order.total_fee/100" @click="gotoOrderDetail(order)"
+				shadow="10px 10px 3px 10px rgba(0, 0, 0, 0.08)" :isShadow="true" note="true">
+				<view>
+					<view>
+						<text class="redtxt">{{formatOrderState(order)}}</text>
+					</view>
+					<view>
+						<text class="txt">退款申请时间：{{ formatDateTime(order.refund_apply_time) }}</text>
+					</view>
+				</view>
+				<template v-slot:footer>
+					<view class="footer-box">
+						<view>
+							<image src='/static/images/mine/stxy.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
+							<text class="footer-box__item">收藏店铺</text>
+						</view>
+						<view @tap="navigationToStore(order.store[0])">
+							<image src='/static/images/mine/shdz.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
+							<text class="footer-box__item">店铺导航</text>
+						</view>
+					</view>
+				</template>
+			</uni-card>
+		</block>
 	</view>
 </template>
 
@@ -73,9 +99,10 @@
 		data() {
 			return {
 				curTabIndex: 0, //当前选择标签
-				tabItems: ['当前订单', '历史订单'],
+				tabItems: ['当前订单', '历史订单', '退款订单'],
 				currentOrders: [], //本人所有当前订单
 				closedOrders: [], //本人所有已完成订单
+				refundOrders: [], //本人的所有退款订单
 			}
 		},
 		methods: {
@@ -102,6 +129,17 @@
 				console.log('uni-id-base-order', res)
 				if (res.result.code == 0) {
 					this.closedOrders = res.result.data
+				}
+
+				//本人的所有退款订单
+				order = await db.collection('uni-id-base-order')
+					.where('user_id==$cloudEnv_uid && (status==6 || status==7 || status==8 || status<0) ')
+					.orderBy('create_time', 'desc')
+					.getTemp()
+				res = await db.collection(order, 'wfy-shop').get()
+				console.log('uni-id-base-order', res)
+				if (res.result.code == 0) {
+					this.refundOrders = res.result.data
 				}
 			},
 			formatDateTime(date) {
