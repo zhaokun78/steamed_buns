@@ -96,7 +96,7 @@
 				"text": "已退款",
 				"value": 8
 			}, {
-				"text": "取消退款",
+				"text": "退款关闭",
 				"value": -1
 			}, {
 				"text": "退款拒绝",
@@ -158,10 +158,10 @@
 			"description": "是否是退款订单",
 			"label": "是否退款订单"
 		},
-		"refund_amount": {
-			"bsonType": "int",
-			"description": "退款金额（非退款订单表示已退款总金额，退款订单表示该笔退款的退款金额），单位：分",
-			"label": "退款金额（分）"
+		"refundId": {
+			"bsonType": "string",
+			"description": "平台退款单号",
+			"label": "平台退款单号"
 		},
 		"refund_desc": {
 			"bsonType": "string",

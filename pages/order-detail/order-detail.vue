@@ -68,8 +68,12 @@
 								<view>退款申请时间</view>
 								<view class="font-weight-bold">{{ formatDateTime(order.refund_apply_time) }}</view>
 							</view>
-							<view class="pay-cell" v-if="order.refund_deny_time">
-								<view>退款拒绝/失败时间</view>
+							<view class="pay-cell" v-if="order.refund_deny_time && order.status==-2">
+								<view>退款拒绝时间</view>
+								<view class="font-weight-bold">{{ formatDateTime(order.refund_deny_time) }}</view>
+							</view>
+							<view class="pay-cell" v-if="order.refund_deny_time && order.status==-3">
+								<view>退款失败时间</view>
 								<view class="font-weight-bold">{{ formatDateTime(order.refund_deny_time) }}</view>
 							</view>
 							<view class="pay-cell" v-if="order.refund_time">
@@ -107,7 +111,11 @@
 							<view>联系电话</view>
 							<view class="font-weight-bold">{{order.user_mobile}}</view>
 						</view>
-						<view class="pay-cell" v-if="order.status==2">
+						<view class="pay-cell" v-if="order.is_refund">
+							<view>退款原因</view>
+							<view class="font-weight-bold">{{order.refund_desc}}</view>
+						</view>
+						<view class="pay-cell" v-if="(order.status==2 || order.status==-3) && userInfo._id==order.user_id">
 							<button type="default" size="mini" @click="open">退款</button>
 						</view>
 						<uni-popup ref="popup" type="dialog">
@@ -116,6 +124,12 @@
 								</uni-combox>
 							</uni-popup-dialog>
 						</uni-popup>
+						<block v-if="order.status==6 && userInfo._id==order.store[0].owner_id">
+							<view class="pay-cell">
+								<button type="default" size="mini" @click="acceptRefund">同意退款</button>
+								<button type="default" size="mini" @click="denyRefund">拒绝退款</button>
+							</view>
+						</block>
 					</view>
 				</list-cell>
 				<!-- order other info end -->
@@ -125,11 +139,19 @@
 </template>
 
 <script>
+	import {
+		mapGetters
+	} from 'vuex';
 	import listCell from '@/components/list-cell/list-cell'
 	import util from '@/common/util'
 	export default {
 		components: {
 			listCell
+		},
+		computed: {
+			...mapGetters({
+				userInfo: 'user/info',
+			}),
 		},
 		data() {
 			return {
@@ -178,6 +200,11 @@
 
 				this.reasonsTxt = this.reasonsTxt.trim()
 				if (this.reasonsTxt == '') {
+					uni.showModal({
+						showCancel: false,
+						title: '提示',
+						content: '请选择或输入退款原因'
+					})
 					return
 				}
 
@@ -223,6 +250,93 @@
 						}
 					})
 				}
+			},
+			acceptRefund() {
+				let that = this
+				uni.showModal({
+					title: '确认',
+					content: '确认同意退款吗?',
+					success: function(res) {
+						if (res.confirm) {
+							uni.showLoading({
+								title: '请稍等'
+							})
+							uniCloud.callFunction({
+								name: 'refund',
+								data: {
+									outTradeNo: that.order._id
+								}
+							}).then((r) => {
+								uni.hideLoading()
+								console.log('call refund', r)
+								if (r.result.code == 0) {
+									uni.showModal({
+										showCancel: false,
+										title: '成功',
+										content: '操作成功!',
+										success: function(r1) {
+											if (r1.confirm) {
+												uni.navigateBack({
+													delta: 1
+												})
+											}
+										}
+									})
+								} else {
+									uni.showModal({
+										showCancel: false,
+										title: '失败',
+										content: '退款失败，请联系系统管理员!',
+										success: function(r1) {
+											if (r1.confirm) {
+												uni.navigateBack({
+													delta: 1
+												})
+											}
+										}
+									})
+								}
+							})
+						}
+					}
+				})
+			},
+			denyRefund() {
+				let that = this
+				uni.showModal({
+					title: '确认',
+					content: '确认拒绝退款吗?',
+					success: function(res) {
+						if (res.confirm) {
+							uni.showLoading({
+								title: '请稍等'
+							})
+
+							const db = uniCloud.database()
+							db.collection('uni-id-base-order').doc(that.order._id).update({
+								status: -2,
+								refund_deny_time: new Date().getTime()
+							}).then((r) => {
+								uni.hideLoading()
+								console.log('uni-id-base-order update', r)
+								if (r.result.updated == 1) {
+									uni.showModal({
+										showCancel: false,
+										title: '成功',
+										content: '操作成功!',
+										success: function(r1) {
+											if (r1.confirm) {
+												uni.navigateBack({
+													delta: 1
+												})
+											}
+										}
+									})
+								}
+							})
+						}
+					}
+				})
 			}
 		}
 	}

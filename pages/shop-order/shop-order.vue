@@ -73,7 +73,18 @@
 				</view>
 			</view>
 		</uni-card>
-		<uni-card v-if="curTabIndex==4" v-for="(order,index) in orders_ywc" :key="order._id" mode="title" :title="order.type == 0 ? '自提' : '外卖'"
+		<uni-card v-if="curTabIndex==4" v-for="(order,index) in orders_tkz" :key="order._id" mode="title" :title="order.type == 0 ? '自提' : '外卖'"
+			:extra="'合计：￥'+ order.total_fee/100" @click="gotoOrderDetail(order)" shadow="10px 10px 3px 10px rgba(0, 0, 0, 0.08)" :isShadow="true">
+			<view>
+				<view>
+					<text class="redtxt">{{formatOrderState(order)}}</text>
+				</view>
+				<view>
+					<text class="txt">退款申请时间：{{ formatDateTime(order.refund_apply_time) }}</text>
+				</view>
+			</view>
+		</uni-card>
+		<uni-card v-if="curTabIndex==5" v-for="(order,index) in orders_ywc" :key="order._id" mode="title" :title="order.type == 0 ? '自提' : '外卖'"
 			:extra="'合计：￥'+ order.total_fee/100" @click="gotoOrderDetail(order)" shadow="10px 10px 3px 10px rgba(0, 0, 0, 0.08)" :isShadow="true">
 			<view>
 				<view>
@@ -89,6 +100,7 @@
 
 <script>
 	import util from '@/common/util'
+	const db = uniCloud.database()
 	export default {
 		data() {
 			return {
@@ -97,66 +109,74 @@
 				orders_bcz: [], //备餐中订单
 				orders_dqc: [], //待取餐订单
 				orders_psz: [], //配送中订单
+				orders_tkz: [], //退款中订单
 				orders_ywc: [], //已完成订单
 				curTabIndex: 0,
-				tabItems: ['已付款', '备餐中', '待取餐', '配送中', '已完成'],
+				tabItems: ['已付款', '备餐中', '待取餐', '配送中', '退款', '已完成'],
 			}
 		},
 		onLoad() {
-			this.loadOrder()
+			//查询本人的店铺
+			db.collection('wfy-shop').where('owner_id==$cloudEnv_uid').limit(1).get().then((r) => {
+				console.log('wfy-shop', r)
+				if (r.result.code == 0) {
+					this.myShop = r.result.data[0]
+					this.loadOrder(this.curTabIndex)
+				}
+			})
 		},
 		methods: {
-			loadOrder() {
+			async loadOrder(index) {
+				let res
 				let that = this
 				const db = uniCloud.database()
 
-				//查询本人的店铺
-				db.collection('wfy-shop').where('owner_id==$cloudEnv_uid').limit(1).get().then((r) => {
-					console.log('wfy-shop', r)
-					if (r.result.code == 0) {
-						that.myShop = r.result.data[0]
-
-						//本人店铺的所有已付款订单
-						db.collection('uni-id-base-order').where("store== '" + that.myShop._id + "' && status==2").get().then((res) => {
-							if (res.result.code == 0) {
-								that.orders_yfk = res.result.data
-							}
-						})
-
-						//本人店铺的所有备餐中订单
-						db.collection('uni-id-base-order').where("store== '" + that.myShop._id + "' && status==3").get().then((res) => {
-							if (res.result.code == 0) {
-								that.orders_bcz = res.result.data
-							}
-						})
-
-						//本人店铺的所有待取餐订单
-						db.collection('uni-id-base-order').where("store== '" + that.myShop._id + "' && status==4 && type==0").get().then((
-							res) => {
-							if (res.result.code == 0) {
-								that.orders_dqc = res.result.data
-							}
-						})
-
-						//本人店铺的所有配送中订单
-						db.collection('uni-id-base-order').where("store== '" + that.myShop._id + "' && status==4 && type==1").get().then((
-							res) => {
-							if (res.result.code == 0) {
-								that.orders_psz = res.result.data
-							}
-						})
-
-						//本人店铺的所有已完成订单
-						db.collection('uni-id-base-order').where("store== '" + that.myShop._id + "' && status==5").get().then((res) => {
-							if (res.result.code == 0) {
-								that.orders_ywc = res.result.data
-							}
-						})
-					}
+				uni.showLoading({
+					title: '请稍等'
 				})
+				if (index == 0) {
+					//本人店铺的所有已付款订单
+					res = await db.collection('uni-id-base-order').where("store== '" + that.myShop._id + "' && status==2").get()
+					if (res.result.code == 0) {
+						that.orders_yfk = res.result.data
+					}
+				} else if (index == 1) {
+					//本人店铺的所有备餐中订单
+					res = await db.collection('uni-id-base-order').where("store== '" + that.myShop._id + "' && status==3").get()
+					if (res.result.code == 0) {
+						that.orders_bcz = res.result.data
+					}
+				} else if (index == 2) {
+					//本人店铺的所有待取餐订单
+					res = await db.collection('uni-id-base-order').where("store== '" + that.myShop._id + "' && status==4 && type==0").get()
+					if (res.result.code == 0) {
+						that.orders_dqc = res.result.data
+					}
+				} else if (index == 3) {
+					//本人店铺的所有配送中订单
+					res = await db.collection('uni-id-base-order').where("store== '" + that.myShop._id + "' && status==4 && type==1").get()
+					if (res.result.code == 0) {
+						that.orders_psz = res.result.data
+					}
+				} else if (index == 4) {
+					//本人店铺的所有退款订单
+					res = await db.collection('uni-id-base-order').where("store== '" + that.myShop._id +
+						"' && (status==6 || status==7 || status==8 || status<0)").orderBy('refund_apply_time', 'desc').get()
+					if (res.result.code == 0) {
+						that.orders_tkz = res.result.data
+					}
+				} else if (index == 5) {
+					//本人店铺的所有已完成订单
+					res = await db.collection('uni-id-base-order').where("store== '" + that.myShop._id + "' && status==5").get()
+					if (res.result.code == 0) {
+						that.orders_ywc = res.result.data
+					}
+				}
+				uni.hideLoading()
 			},
 			onClickTab(e) {
 				this.curTabIndex = e.currentIndex
+				this.loadOrder(this.curTabIndex)
 			},
 			formatDateTime(date) {
 				return util.formatDate(date)
