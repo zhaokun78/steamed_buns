@@ -106,41 +106,51 @@
 			}
 		},
 		methods: {
-			async onShow() {
+			onShow() {
+				this.loadOrder(this.curTabIndex)
+			},
+			async loadOrder(index) {
+				uni.showLoading({
+					title: '请稍等'
+				})
 				const db = uniCloud.database()
-
-				//本人的所有已付款、备餐中、待取餐/配送中订单
-				let order = await db.collection('uni-id-base-order')
-					.where('user_id==$cloudEnv_uid && (status==2 || status==3 || status==4)')
-					.orderBy('create_time', 'desc')
-					.getTemp()
-				let res = await db.collection(order, 'wfy-shop').get()
-				console.log('uni-id-base-order', res)
-				if (res.result.code == 0) {
-					this.currentOrders = res.result.data
+				let order
+				let res
+				if (index == 0) {
+					//本人的所有已付款、备餐中、待取餐/配送中订单
+					order = await db.collection('uni-id-base-order')
+						.where('user_id==$cloudEnv_uid && (status==2 || status==3 || status==4)')
+						.orderBy('create_time', 'desc')
+						.getTemp()
+					res = await db.collection(order, 'wfy-shop').get()
+					console.log('uni-id-base-order', res)
+					if (res.result.code == 0) {
+						this.currentOrders = res.result.data
+					}
+				} else if (index == 1) {
+					//本人的所有已关闭订单
+					order = await db.collection('uni-id-base-order')
+						.where('user_id==$cloudEnv_uid && status==5')
+						.orderBy('create_time', 'desc')
+						.getTemp()
+					res = await db.collection(order, 'wfy-shop').get()
+					console.log('uni-id-base-order', res)
+					if (res.result.code == 0) {
+						this.closedOrders = res.result.data
+					}
+				} else if (index == 2) {
+					//本人的所有退款订单
+					order = await db.collection('uni-id-base-order')
+						.where('user_id==$cloudEnv_uid && (status==6 || status==7 || status==8 || status<0) ')
+						.orderBy('create_time', 'desc')
+						.getTemp()
+					res = await db.collection(order, 'wfy-shop').get()
+					console.log('uni-id-base-order', res)
+					if (res.result.code == 0) {
+						this.refundOrders = res.result.data
+					}
 				}
-
-				//本人的所有已关闭订单
-				order = await db.collection('uni-id-base-order')
-					.where('user_id==$cloudEnv_uid && status==5')
-					.orderBy('create_time', 'desc')
-					.getTemp()
-				res = await db.collection(order, 'wfy-shop').get()
-				console.log('uni-id-base-order', res)
-				if (res.result.code == 0) {
-					this.closedOrders = res.result.data
-				}
-
-				//本人的所有退款订单
-				order = await db.collection('uni-id-base-order')
-					.where('user_id==$cloudEnv_uid && (status==6 || status==7 || status==8 || status<0) ')
-					.orderBy('create_time', 'desc')
-					.getTemp()
-				res = await db.collection(order, 'wfy-shop').get()
-				console.log('uni-id-base-order', res)
-				if (res.result.code == 0) {
-					this.refundOrders = res.result.data
-				}
+				uni.hideLoading()
 			},
 			formatDateTime(date) {
 				return util.formatDate(date)
@@ -167,6 +177,7 @@
 			},
 			onClickTab(e) {
 				this.curTabIndex = e.currentIndex
+				this.loadOrder(this.curTabIndex)
 			},
 			gotoOrderDetail(order) {
 				uni.navigateTo({
