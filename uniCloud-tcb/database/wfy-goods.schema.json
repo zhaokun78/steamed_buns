@@ -3,7 +3,7 @@
 	"permission": {
 		"create": false,
 		"delete": false,
-		"read": "doc.is_on_sale == true",
+		"read": true,
 		"update": false
 	},
 	"properties": {
@@ -90,6 +90,12 @@
 			"description": "是否上架销售",
 			"label": "是否上架销售",
 			"defaultValue": true
+		},
+		"is_groceries": {
+			"bsonType": "bool",
+			"description": "是否杂货",
+			"label": "是否杂货",
+			"defaultValue": false
 		},
 		"keywords": {
 			"bsonType": "string",

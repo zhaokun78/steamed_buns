@@ -262,13 +262,31 @@
 				}
 			},
 			async pay() {
-				uni.showLoading({
-					title: '请稍等'
-				})
-
 				const db = uniCloud.database()
 				let pickupNumber = null
 				if (this.orderType == 'takein') {
+					//检查手机号
+					if (this.form.mobile.trim() == '') {
+						uni.showModal({
+							showCancel: false,
+							title: '提示',
+							content: '为了给您提供更好的服务，请留下您的联系电话',
+						})
+						return
+					}
+					if (!util.phoneNumberCheck(this.form.mobile)) {
+						uni.showModal({
+							showCancel: false,
+							title: '提示',
+							content: '联系电话格式错误！',
+						})
+						return
+					}
+
+					uni.showLoading({
+						title: '请稍等'
+					})
+
 					//调用云函数生成取餐号
 					let pickupNumberRes = await uniCloud.callFunction({
 						name: 'wfy-generate-pickup-number',
@@ -286,6 +304,10 @@
 						pickupNumber = "0" + pickupNumber
 					}
 					pickupNumber = util.randomLetter() + pickupNumber
+				} else {
+					uni.showLoading({
+						title: '请稍等'
+					})
 				}
 
 				//创建订单记录

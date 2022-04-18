@@ -183,6 +183,11 @@ const util = {
 			idvalue += arr[Math.floor(Math.random() * 26)]
 		}
 		return idvalue
+	},
+	//手机号检查
+	phoneNumberCheck(phone) {
+		const reg_tel = /^(13[0-9]|14[01456879]|15[0-3,5-9]|16[2567]|17[0-8]|18[0-9]|19[0-3,5-9])d{8}$/
+		return reg_tel.test(phone)
 	}
 }
 

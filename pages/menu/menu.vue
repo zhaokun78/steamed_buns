@@ -235,6 +235,7 @@
 </template>
 
 <script>
+	import Vue from 'vue'
 	import modal from '@/components/modal/modal'
 	import popupLayer from '@/components/popup-layer/popup-layer'
 	import {
@@ -372,19 +373,29 @@
 				const tmpCate = await db.collection('wfy-goods-categories')
 					.where(that.isFresh ? "name=='锁鲜'" : "name!='锁鲜'")
 					.getTemp()
-				const goods = await db.collection(tmpCate, 'wfy-goods').get()
+				const tmpGoods = await db.collection('wfy-goods').where("is_on_sale==true").getTemp()
+				const goods = await db.collection(tmpCate, tmpGoods).get()
 				console.log('wfy-goods', goods)
 				that.goods = goods.result.data
 
-				//加载当前店铺下架商品
-				let shopGoods = await db.collection('wfy-shop-goods').where("shop_id=='" + this.store._id + "'").get()
+				//加载当前店铺商品（下架或单独设置过价格）
+				let shopGoods = await db.collection('wfy-shop-goods')
+					.where("shop_id=='" + this.store._id + "'").get()
 				console.log('wfy-shop-goods', shopGoods)
 				if (shopGoods.result.code == 0) {
 					for (let i = 0; i < shopGoods.result.data.length; i++) {
 						for (let j = 0; j < that.goods.length; j++) {
 							const index = that.goods[j]._id['wfy-goods'].findIndex(item => item._id == shopGoods.result.data[i].goods_id)
 							if (index > -1) {
-								that.goods[j]._id['wfy-goods'].splice(index, 1)
+								if (shopGoods.result.data[i].is_on_sale == false) {
+									that.goods[j]._id['wfy-goods'].splice(index, 1)
+								} else {
+									if (that.goods[j]._id['wfy-goods'][index].is_groceries && shopGoods.result.data[i].price) {
+										let obj = that.goods[j]._id['wfy-goods'][index]
+										obj.price = shopGoods.result.data[i].price
+										Vue.set(that.goods[j]._id['wfy-goods'], index, obj)
+									}
+								}
 								break
 							}
 						}

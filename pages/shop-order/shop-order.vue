@@ -210,7 +210,7 @@
 							content: '接单成功！',
 							success: function(e) {
 								if (e.confirm) {
-									that.loadOrder()
+									that.loadOrder(that.curTabIndex)
 								}
 							}
 						})
@@ -237,7 +237,7 @@
 							content: '派单成功！',
 							success: function(e) {
 								if (e.confirm) {
-									that.loadOrder()
+									that.loadOrder(that.curTabIndex)
 								}
 							}
 						})
@@ -263,7 +263,7 @@
 							content: '关闭订单成功！',
 							success: function(e) {
 								if (e.confirm) {
-									that.loadOrder()
+									that.loadOrder(that.curTabIndex)
 								}
 							}
 						})

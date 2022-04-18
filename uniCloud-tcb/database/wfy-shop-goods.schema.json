@@ -1,13 +1,13 @@
 // 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
 {
 	"bsonType": "object",
-	"description": "只要表中存在的记录，就代表店铺对应商品已下架",
+	"description": "",
 	"required": [],
 	"permission": {
 		"read": true,
 		"create": true,
-		"update": false,
-		"delete": "doc.creater == auth.uid"
+		"update": "doc.creater == auth.uid",
+		"delete": false
 	},
 	"properties": {
 		"_id": {
@@ -35,6 +35,19 @@
 		"goods_id": {
 			"bsonType": "string",
 			"description": "商品ID"
+		},
+		"price": {
+			"bsonType": "int",
+			"description": "商品价格（分）",
+			"label": "商品价格（分）",
+			"minimum": 1,
+			"maximum": 50000
+		},
+		"is_on_sale": {
+			"bsonType": "bool",
+			"description": "是否上架销售",
+			"label": "是否上架销售",
+			"defaultValue": true
 		}
 	}
 }

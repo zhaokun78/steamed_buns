@@ -324,7 +324,7 @@
 		}, {
 			"path": "pages/shop-goods/shop-goods",
 			"style": {
-				"navigationBarTitleText": "店铺商品上下架维护",
+				"navigationBarTitleText": "店铺商品维护",
 				"enablePullDownRefresh": false
 			}
 
