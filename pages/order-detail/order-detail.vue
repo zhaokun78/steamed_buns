@@ -115,7 +115,8 @@
 							<view>退款原因</view>
 							<view class="font-weight-bold">{{order.refund_desc}}</view>
 						</view>
-						<view class="pay-cell" v-if="(order.status==2 || order.status==-3) && userInfo._id==order.user_id">
+						<view class="pay-cell"
+							v-if="(order.status==2 || (order.type==0 && order.status==4 && goods[0].goods_id[0].category_id==freshGoodsCategoryId)) && userInfo._id==order.user_id">
 							<button type="default" size="mini" @click="open">退款</button>
 						</view>
 						<uni-popup ref="popup" type="dialog">
@@ -156,6 +157,7 @@
 		data() {
 			return {
 				order: undefined, //订单
+				freshGoodsCategoryId: undefined, //锁鲜产品分类Id
 				goods: [], //订单中的商品
 				refundReasons: ["不想要了", "无货"],
 				reasonsTxt: ''
@@ -164,6 +166,8 @@
 		async onLoad(option) {
 			if (option.orderId) {
 				const db = uniCloud.database()
+				let gcRes = await db.collection('wfy-goods-categories').where("name=='锁鲜'").limit(1).get()
+				this.freshGoodsCategoryId = gcRes.result.data[0]._id
 
 				const order = db.collection('uni-id-base-order').where("_id=='" + option.orderId + "'").limit(1).getTemp()
 				const res = await db.collection(order, 'wfy-shop').get()
@@ -171,7 +175,8 @@
 				if (res.result.code == 0) {
 					this.order = res.result.data[0]
 
-					const goods = await db.collection('wfy-order-goods').where("order_id=='" + option.orderId + "'").get()
+					const og = await db.collection('wfy-order-goods').where("order_id=='" + option.orderId + "'").getTemp()
+					const goods = await db.collection(og, 'wfy-goods').get()
 					console.log('goods', goods)
 					if (goods.result.code == 0) {
 						this.goods = goods.result.data

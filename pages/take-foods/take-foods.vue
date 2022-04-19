@@ -95,6 +95,9 @@
 
 <script>
 	import util from '@/common/util'
+	import {
+		mapMutations,
+	} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -106,8 +109,22 @@
 			}
 		},
 		methods: {
+			...mapMutations(['ADD_TO_CART', 'CLEAR_CART']),
 			onShow() {
-				this.loadOrder(this.curTabIndex)
+				//判断本地存储中是否有拆分的订单
+				let notFreshGoods = uni.getStorageSync('notFreshGoodsInCart')
+				if (notFreshGoods) {
+					this.CLEAR_CART()
+					for (let i = 0; i < notFreshGoods.length; i++) {
+						this.ADD_TO_CART(notFreshGoods[i])
+					}
+					uni.removeStorageSync('notFreshGoodsInCart')
+					uni.navigateTo({
+						url: '/pages/pay/pay'
+					})
+				} else {
+					this.loadOrder(this.curTabIndex)
+				}
 			},
 			async loadOrder(index) {
 				uni.showLoading({
