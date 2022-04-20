@@ -8,17 +8,20 @@ exports.main = async (event, context) => {
 	//取前一天
 	let yesterday = new Date()
 	yesterday.setDate(yesterday.getDate() - 1)
+	console.log('yesterday', yesterday)
 
 	//查找前一天状态为已付款、待取餐、退款审核中或退款拒绝的自提订单
 	let orders = await db.collection('uni-id-base-order').where({
 		type: 0,
 		status: dbCmd.eq(2).or(dbCmd.eq(4)).or(dbCmd.eq(6)).or(dbCmd.eq(-2))
 	}).get()
-	console.log('uni-id-base-order', orders)
+	console.log('uni-id-base-order length', orders.data.length)
 
 	for (let i = 0; i < orders.data.length; i++) {
+		console.log(i, orders.data[i])
 		//只处理前一天的订单
 		let orderDate = new Date(orders.data[i].create_time)
+		console.log('orderDate', orderDate)
 		if (yesterday.getFullYear() == orderDate.getFullYear() &&
 			yesterday.getMonth() == orderDate.getMonth() &&
 			yesterday.getDate() == orderDate.getDate()) {
