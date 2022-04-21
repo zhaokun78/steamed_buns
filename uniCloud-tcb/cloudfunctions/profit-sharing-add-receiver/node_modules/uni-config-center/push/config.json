@@ -1,0 +1,10 @@
+{
+	"goEasy": {
+		"commonKey": "BC-01f554db12604b46ae8373907e28794d",
+		"clientKey": "PC-bfb6b6517e7f4c4f8b9285911fd3be27",
+		"subscribeKey": "BS-ac71890d8612459bb4b22429cf406be3",
+		"restKey": "PR-77f4630e731e4b5f8078aea77268cba4",
+		"secretKey": "4bfeca3985504b3d",
+		"restHost":"rest-hangzhou.goeasy.io"
+	}
+}

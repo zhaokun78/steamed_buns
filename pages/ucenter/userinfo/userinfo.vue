@@ -10,9 +10,14 @@
 					</view>
 				</template>
 			</uni-list-item>
-			<uni-list-item class="item" @click="setNickname('')" :title="$t('userinfo.nickname')" :rightText="userInfo.nickname||$t('userinfo.notSet')" link>
+			<uni-list-item class="item" @click="setNickname('')" :title="$t('userinfo.nickname')"
+				:rightText="userInfo.nickname||$t('userinfo.notSet')" link>
 			</uni-list-item>
-			<uni-list-item class="item" @click="bindMobile" :title="$t('userinfo.phoneNumber')" :rightText="userInfo.mobile||$t('userinfo.notSpecified')" link>
+			<uni-list-item class="item" @click="bindMobile" :title="$t('userinfo.phoneNumber')"
+				:rightText="userInfo.mobile||$t('userinfo.notSpecified')" link>
+			</uni-list-item>
+			<uni-list-item v-if="myShop" class="item" @click="profitSharingAddReceiver" title="店主身份绑定"
+				:rightText="myShop.is_profit_sharing_receiver? '已绑定':'未绑定'" link>
 			</uni-list-item>
 		</uni-list>
 		<uni-popup ref="dialog" type="dialog">
@@ -33,6 +38,7 @@
 	export default {
 		data() {
 			return {
+				myShop: undefined,
 				univerifyStyle: {
 					authButton: {
 						"title": "本机号码一键绑定", // 授权按钮文案
@@ -48,6 +54,13 @@
 			this.univerifyStyle.otherLoginButton.title = this.$t('userinfo.bindOtherLogin')
 			uni.setNavigationBarTitle({
 				title: this.$t('userinfo.navigationBarTitle')
+			})
+			//加载本人店铺
+			db.collection('wfy-shop').where("owner_id=='" + this.userInfo._id + "'").get().then((r) => {
+				console.log('wfy-shop', r)
+				if (r.result.code == 0 && r.result.data.length == 1) {
+					this.myShop = r.result.data[0]
+				}
 			})
 		},
 		computed: {
@@ -77,13 +90,13 @@
 					}
 				})
 				// #endif
-				
+
 				// #ifdef MP-WEIXIN
 				this.$refs['uni-bindMobileByMpWeixin'].open()
 				// #endif
-				
+
 				// #ifdef H5
-					//...去用验证码绑定
+				//...去用验证码绑定
 				this.bindMobileBySmsCode()
 				// #endif
 			},
@@ -142,7 +155,7 @@
 						console.log(e);
 						if (e.result.updated) {
 							uni.showToast({
-								title:this.$t('common.updateSucceeded'),
+								title: this.$t('common.updateSucceeded'),
 								icon: 'none'
 							});
 							this.setUserInfo({
@@ -186,12 +199,41 @@
 					});
 				}).catch((err) => {
 					uni.showModal({
-						content: err.message ||this.$t('userinfo.requestFail'),
+						content: err.message || this.$t('userinfo.requestFail'),
 						showCancel: false
 					})
 				}).finally(() => {
 					uni.hideLoading()
 				})
+			},
+			profitSharingAddReceiver() {
+				let that = this
+				if (that.myShop.is_profit_sharing_receiver) {
+					uni.showModal({
+						showCancel: false,
+						title: '提示',
+						content: '已绑定，不允许重复绑定！'
+					})
+				} else {
+					uniCloud.callFunction({
+						name: 'profit-sharing-add-receiver'
+					}).then((res) => {
+						console.log('profit-sharing-add-receiver', res)
+						if (res.result.returnCode == 'SUCCESS') {
+							db.collection('wfy-shop')
+								.where("_id=='" + that.myShop._id + "' && owner_id == '" + that.userInfo._id + "'")
+								.update({
+									is_profit_sharing_receiver: true,
+									profit_sharing_add_receiver_result: res
+								}).then((r) => {
+									console.log('wfy-shop update', r)
+									if (r.result.code == 0 && r.result.updated == 1) {
+										that.myShop.is_profit_sharing_receiver = true
+									}
+								})
+						}
+					})
+				}
 			},
 			uploadAvatarImg(res) {
 				const crop = {
@@ -234,7 +276,7 @@
 						let cloudPath = this.userInfo._id + '' + Date.now()
 						avatar_file.name = cloudPath
 						uni.showLoading({
-							title:this.$t('userinfo.uploading'),
+							title: this.$t('userinfo.uploading'),
 							mask: true
 						});
 						let {
@@ -265,6 +307,7 @@
 		box-sizing: border-box;
 		flex-direction: column;
 	}
+
 	/* #endif */
 	.item {
 		width: 750rpx;
