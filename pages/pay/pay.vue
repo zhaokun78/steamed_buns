@@ -197,7 +197,9 @@
 			}
 		},
 		onLoad(option) {
-			this.form.mobile = this.userInfo.mobile
+			if (this.userInfo.mobile) {
+				this.form.mobile = this.userInfo.mobile
+			}
 		},
 		methods: {
 			...mapMutations(['CLEAR_CART']),
