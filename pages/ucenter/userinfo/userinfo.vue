@@ -215,6 +215,9 @@
 						content: '已绑定，不允许重复绑定！'
 					})
 				} else {
+					uni.showLoading({
+						title: '请稍等'
+					})
 					uniCloud.callFunction({
 						name: 'profit-sharing-add-receiver'
 					}).then((res) => {
@@ -226,11 +229,23 @@
 									is_profit_sharing_receiver: true,
 									profit_sharing_add_receiver_result: res
 								}).then((r) => {
+									uni.hideLoading()
 									console.log('wfy-shop update', r)
 									if (r.result.code == 0 && r.result.updated == 1) {
-										that.myShop.is_profit_sharing_receiver = true
+										uni.showModal({
+											showCancel: false,
+											title: '提示',
+											content: '绑定成功！',
+											success: function(r) {
+												if (r.confirm) {
+													that.myShop.is_profit_sharing_receiver = true
+												}
+											}
+										})
 									}
 								})
+						} else {
+							uni.hideLoading()
 						}
 					})
 				}
