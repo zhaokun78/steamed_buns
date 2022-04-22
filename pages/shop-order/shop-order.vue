@@ -250,13 +250,15 @@
 				})
 
 				let that = this
-				const db = uniCloud.database();
-				db.collection('uni-id-base-order').where("_id=='" + order._id + "'").update({
-					status: 5,
-					close_time: new Date().getTime()
-				}).then((res) => {
+				uniCloud.callFunction({
+					name: 'close-order',
+					data: {
+						outTradeNo: order._id
+					}
+				}).then((r) => {
 					uni.hideLoading()
-					if (res.result.code == 0 && res.result.updated == 1) {
+					console.log('close-order', r)
+					if (r.result.code == 0) {
 						uni.showModal({
 							showCancel: false,
 							title: '提示',
@@ -266,6 +268,12 @@
 									that.loadOrder(that.curTabIndex)
 								}
 							}
+						})
+					} else {
+						uni.showModal({
+							showCancel: false,
+							title: '错误',
+							content: '关闭订单失败，请与管理员联系！'
 						})
 					}
 				})

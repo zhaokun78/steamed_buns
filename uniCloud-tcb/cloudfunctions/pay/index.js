@@ -36,7 +36,7 @@ exports.main = async (event, context) => {
 		_id: outTradeNo,
 		user_id: uid
 	}).get()
-
+	console.log('uni-id-base-order', orderList)
 	if (orderList.data.length !== 1 || orderList.data[0].status !== 1) {
 		return {
 			code: -2,
@@ -44,16 +44,18 @@ exports.main = async (event, context) => {
 		}
 	}
 
-	await db.collection('uni-id-base-order').where({
+	let updated = await db.collection('uni-id-base-order').where({
 		_id: outTradeNo,
 		user_id: uid
 	}).update({
 		pay_type: provider
 	})
+	console.log('uni-id-base-order updated', updated)
 
 	const userList = await db.collection('uni-id-users').where({
 		_id: uid
 	}).get()
+	console.log('uni-id-users', userList)
 	const userInfo = userList.data[0]
 
 	let uniPayInstance,
@@ -65,7 +67,7 @@ exports.main = async (event, context) => {
 	switch (provider + '_' + context.PLATFORM) {
 		case 'wxpay_mp-weixin':
 			uniPayInstance = uniPay.initWeixin(wxConfigMp)
-			openid = userInfo.wx_openid['mp-weixin']
+			openid = userInfo.wx_openid['mp-weixin']			
 			tradeType = 'JSAPI'
 			break;
 		case 'alipay_mp-alipay':
@@ -114,6 +116,7 @@ exports.main = async (event, context) => {
 			tradeType,
 			// attach: "%7B%22type%22%3A%22goods%22%7D"
 		})
+		console.log('getOrderInfo', orderInfo)
 	} catch (e) {
 		console.log(e.message)
 		return {
