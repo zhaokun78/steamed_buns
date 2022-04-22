@@ -10,7 +10,7 @@
 			</uni-list>
 			<uni-popup ref="popup" type="dialog">
 				<uni-popup-dialog mode="base" :title="shop_goods_name" :duration="2000" :before-close="true" @close="close" @confirm="confirm">
-					<uni-number-box v-model="shop_goods_price" :min="1" :max="500"></uni-number-box>
+					<uni-number-box v-model="shop_goods_price" :min="1" :max="500" :step="0.01"></uni-number-box>
 				</uni-popup-dialog>
 			</uni-popup>
 		</block>
