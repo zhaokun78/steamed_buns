@@ -1,5 +1,9 @@
 {
 	"bsonType": "object",
+	"permission": {
+		"read": true,
+		"update": "doc._id == auth.uid"
+	},
 	"required": ["username", "password"],
 	"properties": {
 		"_id": {
@@ -110,6 +114,25 @@
 			"title": "头像地址",
 			"description": "头像地址",
 			"trim": "both"
+		},
+		"avatar_file": {
+			"bsonType": "file",
+			"title": "头像文件",
+			"description": "用file类型方便使用uni-file-picker组件"
+		},
+		"department_id": {
+			"bsonType": "array",
+			"description": "部门ID",
+			"permission": {
+				"write": false
+			},
+			"title": "部门",
+			"enumType": "tree",
+			"enum": {
+				"collection": "opendb-department",
+				"orderby": "name asc",
+				"field": "_id as value, name as text"
+			}
 		},
 		"role": {
 			"bsonType": "array",
@@ -237,6 +260,13 @@
 				}
 			}
 		},
+		"score": {
+			"bsonType": "int",
+			"description": "用户积分，积分变更记录可参考：uni-id-scores表定义",
+			"permission": {
+				"write": false
+			}
+		},
 		"register_date": {
 			"bsonType": "timestamp",
 			"description": "注册时间",
@@ -268,6 +298,13 @@
 			"bsonType": "array",
 			"description": "用户全部上级邀请者",
 			"trim": "both"
+		},
+		"invite_time": {
+			"bsonType": "timestamp",
+			"description": "受邀时间",
+			"permission": {
+				"write": false
+			}
 		},
 		"my_invite_code": {
 			"bsonType": "string",
