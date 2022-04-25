@@ -18,23 +18,21 @@ exports.main = async (event, context) => {
 	console.log('uni-id-base-order length', orders.data.length)
 
 	for (let i = 0; i < orders.data.length; i++) {
-		console.log(i, orders.data[i])
+		console.log('start ' + i, orders.data[i])
+
 		//只处理前一天的订单
 		let orderDate = new Date(orders.data[i].create_time)
 		console.log('orderDate', orderDate)
 		if (yesterday.getFullYear() == orderDate.getFullYear() &&
 			yesterday.getMonth() == orderDate.getMonth() &&
 			yesterday.getDate() == orderDate.getDate()) {
-			//分账
-
-			//关闭订单		
-			let updateNumber = await db.collection('uni-id-base-order').where({
-				_id: orders.data[i]._id
-			}).update({
-				status: 5,
-				close_time: new Date().getTime()
+			let res = await uniCloud.callFunction({
+				name: 'close-order',
+				data: {
+					outTradeNo: orders.data[i]._id
+				}
 			})
-			console.log(orders.data[i]._id, updateNumber)
+			console.log('end ' + i, res)
 		}
 	}
 
