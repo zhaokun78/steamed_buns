@@ -97,24 +97,28 @@ function signature(STIME) {
 }
 
 exports.main = async (event, context) => {
+	console.log('event', event)
 	const uniPayConfig = createConfig({
 		pluginId: 'uni-pay'
 	})
 	const {
 		wxConfigMp,
-		wxConfigApp,
-		wxConfigH5,
-		aliConfigMp,
-		aliConfigApp,
-		aliConfigH5,
-		// aliConfigSandbox
+		wxConfigMp_1626274711,
 	} = uniPayConfig.requireFile('config.js')
 	let uniPayInstance
 	let provider
-	switch (event.path.substring(1)) {
+	let params = event.path.substring(1).split('/')
+	console.log(params)
+	switch (params[0]) {
 		case 'wxpay_mp-weixin':
 			provider = 'weixin'
-			uniPayInstance = uniPay.initWeixin(wxConfigMp)
+			if (params.length == 2) {
+				if (params[1] == '1626274711') {
+					uniPayInstance = uniPay.initWeixin(wxConfigMp_1626274711)
+				}
+			} else {
+				uniPayInstance = uniPay.initWeixin(wxConfigMp)
+			}
 			break;
 		case 'wxpay_app-plus':
 			provider = 'weixin'

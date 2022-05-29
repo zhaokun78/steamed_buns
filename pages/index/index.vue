@@ -10,14 +10,16 @@
 		<view class="content">
 			<view class="entrance">
 				<view class="item" @tap="takein">
-					<image src="/static/images/index/zq.png" class="icon"></image>
+					<image src="/static/images/index/ddqc.png" class="icon"></image>
 					<view class="title">到店取餐</view>
 				</view>
-				<view class="item" @tap="takeout">
-					<image src="/static/images/index/wm.png" class="icon"></image>
-					<view class="title">给您送去</view>
+				<view class="item" @tap="gotoFreshList">
+					<image src="/static/images/index/sxcp.png" class="icon"></image>
+					<view class="title">锁鲜产品</view>
 				</view>
 			</view>
+
+			<!--
 			<view class="info" @tap="gotoFreshList">
 				<image class="logo-img" mode="widthFix" src="@/static/images/index/fresh.gif"></image>
 				<view class="integral_section">
@@ -29,6 +31,9 @@
 					</view>
 				</view>
 			</view>
+			-->
+
+			<!--
 			<view class="navigators">
 				<view class="left">
 					<view class="grid flex-column just-content-center">
@@ -59,6 +64,7 @@
 					</view>
 				</view>
 			</view>
+			-->
 		</view>
 	</view>
 </template>
@@ -170,7 +176,7 @@
 
 	.entrance {
 		position: relative;
-		margin-top: -40rpx;
+		margin-top: 240rpx;
 		margin-bottom: 30rpx;
 		border-radius: 10rpx;
 		background-color: #ffffff;

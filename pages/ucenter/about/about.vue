@@ -102,12 +102,44 @@
 				url,
 				title
 			}) {
-				uni.navigateTo({
-					url: '/pages/common/webview/webview?url=' + url + '&title=' + title,
-					success: res => {},
-					fail: () => {},
-					complete: () => {}
-				});
+
+				if (url.substr(-4) == '.pdf') {
+					uni.showLoading({
+						title: '请稍等'
+					})
+					uni.downloadFile({
+						url: url,
+						success: function(res) {
+							uni.openDocument({
+								filePath: res.tempFilePath,
+								showMenu: true,
+								success: function(res) {
+									console.log('打开文档成功');
+								},
+								fail: function(err) {
+									console.log('打开文档失败', err)
+								}
+							});
+						},
+						fail: function(err) {
+							uni.showModal({
+								showCancel: false,
+								title: '失败',
+								content: '下载PDF出错'
+							})
+						},
+						complete: function() {
+							uni.hideLoading()
+						}
+					})
+				} else {
+					uni.navigateTo({
+						url: '/pages/common/webview/webview?url=' + url + '&title=' + title,
+						success: res => {},
+						fail: () => {},
+						complete: () => {}
+					});
+				}
 			}
 		}
 	}

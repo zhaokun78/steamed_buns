@@ -22,6 +22,7 @@
 				</view>
 			</template>
 		</uni-card>
+		<!--
 		<uni-card v-if="curTabIndex==1" v-for="(order,index) in orders_bcz" :key="order._id" mode="title" :title="order.type == 0 ? '自提' : '外卖'"
 			:extra="'合计：￥'+ order.total_fee/100" @click="gotoOrderDetail(order)" shadow="10px 10px 3px 10px rgba(0, 0, 0, 0.08)" :isShadow="true"
 			note="true">
@@ -42,7 +43,8 @@
 				</view>
 			</template>
 		</uni-card>
-		<uni-card v-if="curTabIndex==2" v-for="(order,index) in orders_dqc" :key="order._id" mode="title" :title="order.type == 0 ? '自提' : '外卖'"
+		-->
+		<uni-card v-if="curTabIndex==1" v-for="(order,index) in orders_dqc" :key="order._id" mode="title" :title="order.type == 0 ? '自提' : '外卖'"
 			:extra="'合计：￥'+ order.total_fee/100" @click="gotoOrderDetail(order)" shadow="10px 10px 3px 10px rgba(0, 0, 0, 0.08)" :isShadow="true"
 			note="true">
 			<view>
@@ -62,6 +64,7 @@
 				</view>
 			</template>
 		</uni-card>
+		<!--
 		<uni-card v-if="curTabIndex==3" v-for="(order,index) in orders_psz" :key="order._id" mode="title" :title="order.type == 0 ? '自提' : '外卖'"
 			:extra="'合计：￥'+ order.total_fee/100" @click="gotoOrderDetail(order)" shadow="10px 10px 3px 10px rgba(0, 0, 0, 0.08)" :isShadow="true">
 			<view>
@@ -73,7 +76,8 @@
 				</view>
 			</view>
 		</uni-card>
-		<uni-card v-if="curTabIndex==4" v-for="(order,index) in orders_tkz" :key="order._id" mode="title" :title="order.type == 0 ? '自提' : '外卖'"
+		-->
+		<uni-card v-if="curTabIndex==2" v-for="(order,index) in orders_tkz" :key="order._id" mode="title" :title="order.type == 0 ? '自提' : '外卖'"
 			:extra="'合计：￥'+ order.total_fee/100" @click="gotoOrderDetail(order)" shadow="10px 10px 3px 10px rgba(0, 0, 0, 0.08)" :isShadow="true">
 			<view>
 				<view>
@@ -84,7 +88,7 @@
 				</view>
 			</view>
 		</uni-card>
-		<uni-card v-if="curTabIndex==5" v-for="(order,index) in orders_ywc" :key="order._id" mode="title" :title="order.type == 0 ? '自提' : '外卖'"
+		<uni-card v-if="curTabIndex==3" v-for="(order,index) in orders_ywc" :key="order._id" mode="title" :title="order.type == 0 ? '自提' : '外卖'"
 			:extra="'合计：￥'+ order.total_fee/100" @click="gotoOrderDetail(order)" shadow="10px 10px 3px 10px rgba(0, 0, 0, 0.08)" :isShadow="true">
 			<view>
 				<view>
@@ -112,13 +116,13 @@
 				orders_tkz: [], //退款中订单
 				orders_ywc: [], //已完成订单
 				curTabIndex: 0,
-				tabItems: ['已付款', '备餐中', '待取餐', '配送中', '退款', '已完成'],
+				tabItems: ['已付款', '待取餐', '退款', '已完成'],
 			}
 		},
-		onLoad() {
+		onShow() {
 			//查询本人的店铺
 			db.collection('wfy-shop').where('owner_id==$cloudEnv_uid').limit(1).get().then((r) => {
-				console.log('wfy-shop', r)
+				console.log('onShow wfy-shop', r)
 				if (r.result.code == 0) {
 					this.myShop = r.result.data[0]
 					this.loadOrder(this.curTabIndex)
@@ -140,32 +144,32 @@
 					if (res.result.code == 0) {
 						that.orders_yfk = res.result.data
 					}
-				} else if (index == 1) {
+				} else if (false) {
 					//本人店铺的所有备餐中订单
 					res = await db.collection('uni-id-base-order').where("store== '" + that.myShop._id + "' && status==3").get()
 					if (res.result.code == 0) {
 						that.orders_bcz = res.result.data
 					}
-				} else if (index == 2) {
+				} else if (index == 1) {
 					//本人店铺的所有待取餐订单
 					res = await db.collection('uni-id-base-order').where("store== '" + that.myShop._id + "' && status==4 && type==0").get()
 					if (res.result.code == 0) {
 						that.orders_dqc = res.result.data
 					}
-				} else if (index == 3) {
+				} else if (false) {
 					//本人店铺的所有配送中订单
 					res = await db.collection('uni-id-base-order').where("store== '" + that.myShop._id + "' && status==4 && type==1").get()
 					if (res.result.code == 0) {
 						that.orders_psz = res.result.data
 					}
-				} else if (index == 4) {
+				} else if (index == 2) {
 					//本人店铺的所有退款订单
 					res = await db.collection('uni-id-base-order').where("store== '" + that.myShop._id +
 						"' && (status==6 || status==7 || status==8 || status<0)").orderBy('refund_apply_time', 'desc').get()
 					if (res.result.code == 0) {
 						that.orders_tkz = res.result.data
 					}
-				} else if (index == 5) {
+				} else if (index == 3) {
 					//本人店铺的所有已完成订单
 					res = await db.collection('uni-id-base-order').where("store== '" + that.myShop._id + "' && status==5").get()
 					if (res.result.code == 0) {

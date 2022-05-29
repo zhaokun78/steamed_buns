@@ -48,22 +48,9 @@
 				myShop: undefined,
 				ucenterList: [
 					[{
-						"title": this.$t('mine.signIn'),
-						"event": 'signIn',
-						"icon": "calendar"
-					}, {
-						"title": this.$t('mine.myScore'),
-						"to": '',
-						"event": 'getScore',
-						"icon": "paperplane"
-					}, {
 						"title": this.$t('mine.settings'),
 						"to": '/pages/ucenter/userinfo/userinfo',
 						"icon": "gear"
-					}, {
-						"title": this.$t('mine.address'),
-						"to": '/pages/address/address',
-						"icon": "contact"
 					}, {
 						"title": this.$t('mine.about'),
 						"to": '/pages/ucenter/about/about',

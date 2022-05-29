@@ -52,6 +52,12 @@
 				"$env": "uid"
 			}
 		},
+		"wx_pay_merchant_number": {
+			"bsonType": "string",
+			"description": "微信支付商户号",
+			"label": "微信支付商户号",
+			"trim": "both"
+		},
 		"city_code": {
 			"bsonType": "string",
 			"description": "所在城市",
@@ -128,15 +134,6 @@
 			"bsonType": "string",
 			"description": "打印机SN",
 			"label": "打印机SN"
-		},
-		"is_profit_sharing_receiver": {
-			"bsonType": "bool",
-			"description": "店主是否是分账接收人",
-			"defaultValue": false
-		},
-		"profit_sharing_add_receiver_result": {
-			"bsonType": "object",
-			"description": "腾讯接口调用返回值"
 		}
 	}
 }

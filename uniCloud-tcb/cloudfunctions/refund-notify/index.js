@@ -8,10 +8,16 @@ exports.main = async (event, context) => {
 	})
 	const {
 		wxConfigMp,
+		wxConfigMp_1626274711
 	} = uniPayConfig.requireFile('config.js')
 
 	//初始化unipay
-	let uniPayInstance = uniPay.initWeixin(wxConfigMp)
+	let uniPayInstance
+	if (event.path.substring(1) == '1626274711') {
+		uniPayInstance = uniPay.initWeixin(wxConfigMp_1626274711)
+	} else {
+		uniPayInstance = uniPay.initWeixin(wxConfigMp)
+	}
 
 	let res = await uniPayInstance.verifyRefundNotify(event)
 	console.log(res)

@@ -25,10 +25,12 @@
 					</view>
 					<template v-slot:footer>
 						<view class="footer-box">
+							<!--
 							<view>
 								<image src='/static/images/mine/stxy.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
 								<text class="footer-box__item">收藏店铺</text>
 							</view>
+							-->
 							<view @tap="navigationToStore(order.store[0])">
 								<image src='/static/images/mine/shdz.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
 								<text class="footer-box__item">店铺导航</text>
@@ -52,10 +54,12 @@
 				</view>
 				<template v-slot:footer>
 					<view class="footer-box">
+						<!--
 						<view>
 							<image src='/static/images/mine/stxy.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
 							<text class="footer-box__item">收藏店铺</text>
 						</view>
+						-->
 						<view @tap="navigationToStore(order.store[0])">
 							<image src='/static/images/mine/shdz.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
 							<text class="footer-box__item">店铺导航</text>
@@ -78,10 +82,12 @@
 				</view>
 				<template v-slot:footer>
 					<view class="footer-box">
+						<!--
 						<view>
 							<image src='/static/images/mine/stxy.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
 							<text class="footer-box__item">收藏店铺</text>
 						</view>
+						-->
 						<view @tap="navigationToStore(order.store[0])">
 							<image src='/static/images/mine/shdz.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
 							<text class="footer-box__item">店铺导航</text>

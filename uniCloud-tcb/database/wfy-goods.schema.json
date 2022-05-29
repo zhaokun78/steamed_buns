@@ -102,13 +102,6 @@
 			"description": "商品关键字，为搜索引擎收录使用",
 			"label": "商品关键字",
 			"trim": "both"
-		},
-		"profit_sharing_rate": {
-			"bsonType": "int",
-			"description": "分账比例，该数字代表订单减去微信手续费后分配给店铺的比例",
-			"label": "分账比例",
-			"minimum": 0,
-			"maximum": 100
 		}
 	},
 	"required": [

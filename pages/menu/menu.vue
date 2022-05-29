@@ -32,9 +32,11 @@
 						<view class="dinein" :class="{active: orderType == 'takein'}" @tap="switchOrderType('takein')">
 							<text>自取</text>
 						</view>
+						<!--
 						<view class="takeout" :class="{active: orderType == 'takeout'}" @tap="switchOrderType('takeout')">
 							<text>外卖</text>
 						</view>
+						-->
 					</view>
 				</view>
 				<view class="coupon">

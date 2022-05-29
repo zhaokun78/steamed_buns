@@ -5,17 +5,13 @@ const uniID = require('uni-id')
 
 const db = uniCloud.database()
 exports.main = async (event, context) => {
+	console.log('event', event)
 	const uniPayConfig = createConfig({
 		pluginId: 'uni-pay'
 	})
 	const {
 		wxConfigMp,
-		wxConfigApp,
-		wxConfigH5,
-		aliConfigMp,
-		aliConfigApp,
-		aliConfigH5,
-		// aliConfigSandbox
+		wxConfigMp_1626274711,
 	} = uniPayConfig.requireFile('config.js')
 	let {
 		provider,
@@ -32,6 +28,7 @@ exports.main = async (event, context) => {
 	}
 	const uid = payload.uid
 
+	//查询订单
 	const orderList = await db.collection('uni-id-base-order').where({
 		_id: outTradeNo,
 		user_id: uid
@@ -44,6 +41,7 @@ exports.main = async (event, context) => {
 		}
 	}
 
+	//更新订单
 	let updated = await db.collection('uni-id-base-order').where({
 		_id: outTradeNo,
 		user_id: uid
@@ -52,11 +50,18 @@ exports.main = async (event, context) => {
 	})
 	console.log('uni-id-base-order updated', updated)
 
+	//查询支付用户
 	const userList = await db.collection('uni-id-users').where({
 		_id: uid
 	}).get()
 	console.log('uni-id-users', userList)
 	const userInfo = userList.data[0]
+
+	//查询店铺
+	const shop = await db.collection('wfy-shop').where({
+		_id: orderList.data[0].store
+	}).get()
+	console.log('wfy-shop', shop)
 
 	let uniPayInstance,
 		notifyUrl =
@@ -66,8 +71,18 @@ exports.main = async (event, context) => {
 	// notifyUrl为接收通知的云函数的url，务必替换为自己的通知地址，云函数Url化请参考：https://uniapp.dcloud.io/uniCloud/http
 	switch (provider + '_' + context.PLATFORM) {
 		case 'wxpay_mp-weixin':
-			uniPayInstance = uniPay.initWeixin(wxConfigMp)
-			openid = userInfo.wx_openid['mp-weixin']			
+			//查询店铺的目的是获取店铺相应的微信支付商户配置信息
+			//如果店铺获取不到，就用公司的
+			if (shop.data.length == 1 && shop.data[0].wx_pay_merchant_number) {
+				notifyUrl = notifyUrl + '/' + shop.data[0].wx_pay_merchant_number
+				if (shop.data[0].wx_pay_merchant_number == '1626274711') {
+					uniPayInstance = uniPay.initWeixin(wxConfigMp_1626274711)
+				}
+			} else {
+				uniPayInstance = uniPay.initWeixin(wxConfigMp)
+			}
+
+			openid = userInfo.wx_openid['mp-weixin']
 			tradeType = 'JSAPI'
 			break;
 		case 'alipay_mp-alipay':

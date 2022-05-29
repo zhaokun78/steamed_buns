@@ -1,40 +1,35 @@
 <template>
 	<view>
-		<uni-segmented-control :current="current" :values="items" @clickItem="onClickItem" styleType="text" activeColor="#4cd964">
-		</uni-segmented-control>
 		<view class="content">
-			<view v-show="current === 0">
-				<uni-search-bar placeholder="搜索店铺" @confirm="searchStore" @input="searchStore" @clear="clearSearchStore" @cancel="cancelSearchStore">
-				</uni-search-bar>
-				<view v-for="(item,index) in stores" :key="item._id">
-					<uni-card mode="title" :title="item.name" :subTitle="item.state" :extra="formatDistance(item.distance)" @click="selectStore(item)"
-						shadow="10px 10px 3px 10px rgba(0, 0, 0, 0.08)" :isShadow="true" note="true">
+			<uni-search-bar placeholder="搜索店铺" @confirm="searchStore" @input="searchStore" @clear="clearSearchStore" @cancel="cancelSearchStore">
+			</uni-search-bar>
+			<view v-for="(item,index) in stores" :key="item._id">
+				<uni-card mode="title" :title="item.name" :subTitle="item.state" :extra="formatDistance(item.distance)" @click="selectStore(item)"
+					shadow="10px 10px 3px 10px rgba(0, 0, 0, 0.08)" :isShadow="true" note="true">
+					<view>
 						<view>
-							<view>
-								<text class="txt">地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址：{{item.address}}</text>
-							</view>
-							<view>
-								<text
-									class="txt">营业时间：{{item.business_hour_start.toString().padStart(2,'0')+':00'}}-{{item.business_hour_end.toString().padStart(2,'0')+':00'}}</text>
-							</view>
+							<text class="txt">地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址：{{item.address}}</text>
 						</view>
-						<template v-slot:footer>
-							<view class="footer-box">
+						<view>
+							<text
+								class="txt">营业时间：{{item.business_hour_start.toString().padStart(2,'0')+':00'}}-{{item.business_hour_end.toString().padStart(2,'0')+':00'}}</text>
+						</view>
+					</view>
+					<template v-slot:footer>
+						<view class="footer-box">
+							<!--
 								<view>
 									<image src='/static/images/mine/stxy.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
 									<text class="footer-box__item">收藏店铺</text>
 								</view>
-								<view @tap="navigationToStore(item)">
-									<image src='/static/images/mine/shdz.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
-									<text class="footer-box__item">店铺导航</text>
-								</view>
+								-->
+							<view @tap="navigationToStore(item)">
+								<image src='/static/images/mine/shdz.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
+								<text class="footer-box__item">店铺导航</text>
 							</view>
-						</template>
-					</uni-card>
-				</view>
-			</view>
-			<view v-show="current === 1">
-				收藏店铺
+						</view>
+					</template>
+				</uni-card>
 			</view>
 		</view>
 	</view>
@@ -55,7 +50,7 @@
 			return {
 				stores: [], //店铺集合
 				current: 0, //当前选择标签
-				items: ['选择店铺', '收藏店铺'],
+				items: ['选择店铺'],
 				latitude: undefined, //地图中心纬度
 				longitude: undefined, //地图中心经度
 				covers: [], //地图标记：选中店铺信息

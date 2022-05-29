@@ -165,7 +165,8 @@
 	import {
 		mapGetters,
 		mapState,
-		mapMutations
+		mapMutations,
+		mapActions
 	} from 'vuex'
 	import listCell from '@/components/list-cell/list-cell'
 	import modal from '@/components/modal/modal'
@@ -187,6 +188,7 @@
 		computed: {
 			...mapGetters({
 				userInfo: 'user/info',
+				hasLogin: 'user/hasLogin'
 			}),
 			...mapState(['orderType', 'address', 'store', 'cart']),
 			total() {
@@ -196,12 +198,48 @@
 				return this.cart.reduce((acc, cur) => acc + cur.number * cur.price, 0) / 100
 			}
 		},
+		onShow() {
+			let that = this
+			if (this.hasLogin && this.userInfo.nickname && this.userInfo.avatar_file && this.userInfo.mobile) {
+				if (!this.userInfo._id) {
+					uni.showModal({
+						showCancel: false,
+						title: '提示',
+						content: '请重新登录以更新您的个人信息',
+						success: (res) => {
+							if (res.confirm) {
+								that.logout()
+								uni.navigateTo({
+									url: "/pages/ucenter/login-page/index/index"
+								})
+							}
+						}
+					})
+				}
+			} else {
+				uni.showModal({
+					showCancel: false,
+					title: '提示',
+					content: '请完善您的个人资料！',
+					success: (res) => {
+						if (res.confirm) {
+							uni.navigateTo({
+								url: '/pages/ucenter/userinfo/userinfo'
+							})
+						}
+					}
+				})
+			}
+		},
 		onLoad(option) {
 			if (this.userInfo.mobile) {
 				this.form.mobile = this.userInfo.mobile
 			}
 		},
 		methods: {
+			...mapActions({
+				logout: 'user/logout'
+			}),
 			...mapMutations(['CLEAR_CART']),
 			selectAddress() {
 				uni.navigateTo({
@@ -272,7 +310,7 @@
 						uni.showModal({
 							showCancel: false,
 							title: '提示',
-							content: '为了给您提供更好的服务，请留下您的联系电话',
+							content: '为提供更好的服务，请留下您的联系电话',
 						})
 						return
 					}

@@ -16,9 +16,15 @@
 			<uni-list-item class="item" @click="bindMobile" :title="$t('userinfo.phoneNumber')"
 				:rightText="userInfo.mobile||$t('userinfo.notSpecified')" link>
 			</uni-list-item>
+			<!--
 			<uni-list-item v-if="myShop" class="item" @click="profitSharingAddReceiver" title="店主身份绑定"
 				:rightText="myShop.is_profit_sharing_receiver? '已绑定':'未绑定'" link>
 			</uni-list-item>
+			-->
+			<!--
+			<uni-list-item class="item" @click="meituan" title="美团调用" link>
+			</uni-list-item>
+			-->
 		</uni-list>
 		<uni-popup ref="dialog" type="dialog">
 			<uni-popup-dialog mode="input" :value="userInfo.nickname" @confirm="setNickname" :title="$t('userinfo.setNickname')"
@@ -249,6 +255,11 @@
 						}
 					})
 				}
+			},
+			meituan() {
+				uniCloud.callFunction({
+					name: 'meituan'
+				})
 			},
 			uploadAvatarImg(res) {
 				const crop = {
