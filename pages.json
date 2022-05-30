@@ -14,7 +14,7 @@
 				// #ifndef APP-PLUS
 				"enablePullDownRefresh": true,
 				// #endif
-				"navigationBarTitleText": "味丰源云南包子王",
+				"navigationBarTitleText": "味丰源商城",
 				"navigationBarTextStyle": "black",
 				"navigationBarBackgroundColor": "#ffffff"
 			}
@@ -71,7 +71,7 @@
 		{
 			"path": "pages/ucenter/ucenter",
 			"style": {
-				"navigationBarTitleText": "味丰源云南包子王",
+				"navigationBarTitleText": "味丰源商城",
 				"navigationBarTextStyle": "black",
 				"navigationBarBackgroundColor": "#ffffff"
 			}
@@ -224,7 +224,7 @@
 			"path": "pages/menu/menu",
 			"style": {
 				"navigationStyle": "custom",
-				"navigationBarTitleText": "味丰源云南包子王",
+				"navigationBarTitleText": "味丰源商城",
 				"navigationBarTextStyle": "black",
 				"navigationBarBackgroundColor": "#ffffff"
 			}
