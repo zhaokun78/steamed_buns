@@ -90,8 +90,8 @@
                 "oauth" : {
                     "apple" : {},
                     "weixin" : {
-                        "appid" : "wxe253c868826cc9f9",
-                        "appsecret" : "ef19401ab4be0cae1f2c0cefd16a0923",
+                        "appid" : "",
+                        "appsecret" : "",
                         "UniversalLinks" : ""
                     },
                     "univerify" : {}
@@ -99,7 +99,7 @@
                 "ad" : {},
                 "share" : {
                     "weixin" : {
-                        "appid" : "wxe253c868826cc9f9",
+                        "appid" : "",
                         "UniversalLinks" : ""
                     }
                 },
