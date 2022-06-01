@@ -30,9 +30,13 @@ export default {
 		*/
 		"needLogin": [
 			//{pattern:/^\/pages\/list.*/},	//支持正则表达式
+			"/pages/ucenter/userinfo/userinfo",
 			"/pages/address/address",
 			"/pages/pay/pay",
 			"/pages/take-foods/take-foods",
+			"/pages/wfy-shop/edit",
+			"/pages/shop-order/shop-order",
+			"/pages/shop-goods/shop-goods",
 		],
 
 		// "visitor": [

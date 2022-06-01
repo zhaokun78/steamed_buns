@@ -33,10 +33,9 @@
 			</view>
 			-->
 
-			<!--
 			<view class="navigators">
 				<view class="left">
-					<view class="grid flex-column just-content-center">
+					<view class="grid flex-column just-content-center" @tap="gotoUserCenter">
 						<view class="d-flex align-items-center">
 							<image src="/static/images/index/csc.png" class="mark-img"></image>
 							<view class="font-size-sm text-color-base">会员中心</view>
@@ -48,23 +47,22 @@
 					</view>
 				</view>
 				<view class="right">
-					<view class="tea-activity" @tap="viewTuanCanPic">
+					<view class="tea-activity" @tap="viewPic_1">
 						<image src="/static/images/index/mcsb.png" class="mark-img"></image>
-						<view>团餐</view>
+						<view>{{tupian_1.value}}</view>
 						<view class="right-img">
 							<image src="/static/images/index/mcsb_bg.png" mode="widthFix"></image>
 						</view>
 					</view>
-					<view class="member-gifts" @tap="packages">
+					<view class="member-gifts" @tap="viewPic_2">
 						<image src="/static/images/index/hyjb.png" class="mark-img"></image>
-						<view>加盟</view>
+						<view>{{tupian_2.value}}</view>
 						<view class="right-img">
 							<image src="/static/images/index/hyjb_bg.png" mode="widthFix"></image>
 						</view>
 					</view>
 				</view>
 			</view>
-			-->
 		</view>
 	</view>
 </template>
@@ -79,6 +77,8 @@
 		data() {
 			return {
 				banners: [],
+				tupian_1: undefined,
+				tupian_2: undefined,
 			}
 		},
 		computed: {
@@ -96,6 +96,20 @@
 				console.log('opendb-banner', r)
 				if (r.result.code == 0) {
 					this.banners = r.result.data
+				}
+			})
+
+			//右侧两个图片
+			db.collection('wfy-system-parameter').where("name=='图片一' || name=='图片二'").get().then((r) => {
+				console.log('wfy-system-parameter', r)
+				if (r.result.code == 0) {
+					for (let i = 0; i < r.result.data.length; i++) {
+						if (r.result.data[i].name == '图片一') {
+							this.tupian_1 = r.result.data[i]
+						} else if (r.result.data[i].name == '图片二') {
+							this.tupian_2 = r.result.data[i]
+						}
+					}
 				}
 			})
 		},
@@ -118,9 +132,19 @@
 					url: "/pages/address/address?is_choose=true"
 				})
 			},
-			viewTuanCanPic() {
+			gotoUserCenter() {
 				uni.navigateTo({
-					url: './tuancan/tuancan'
+					url: '/pages/ucenter/userinfo/userinfo'
+				})
+			},
+			viewPic_1() {
+				uni.navigateTo({
+					url: './tuancan/tuancan?name=图片一'
+				})
+			},
+			viewPic_2() {
+				uni.navigateTo({
+					url: './tuancan/tuancan?name=图片二'
 				})
 			},
 			gotoFreshList() {
@@ -176,7 +200,7 @@
 
 	.entrance {
 		position: relative;
-		margin-top: 240rpx;
+		margin-top: -40rpx;
 		margin-bottom: 30rpx;
 		border-radius: 10rpx;
 		background-color: #ffffff;
